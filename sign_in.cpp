@@ -15,6 +15,6 @@ Sign_in::~Sign_in()
 
 void Sign_in::on_SigninButton_clicked()
 {
-    //emit(recive_info(ui->lineUserName_sign->text(),ui->lineEmail_sign->text(),ui->linePhoneNumber_sign->text(),ui->linePassword_sign->text(),ui->dateOfBirh->YearSection,ui->dateOfBirh->MonthSection, ui->dateOfBirh->DaySection));
+    emit(recive_info(ui->lineUserName_sign->text(),ui->lineEmail_sign->text(),ui->linePhoneNumber_sign->text(),ui->linePassword_sign->text(),ui->dateOfBirh->YearSection,ui->dateOfBirh->MonthSection, ui->dateOfBirh->DaySection));
 }
 

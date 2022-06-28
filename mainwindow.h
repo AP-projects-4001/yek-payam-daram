@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <vector>
 #include "account.h"
+#include <QTcpSocket>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,8 +24,18 @@ private slots:
 
     void on_Login_openwindow_Button_clicked();
 
+    void readingdata();
+
+    void writingdata();
+
+    void connecttoserver();
+
+    void dissconnect();
+
 private:
     Ui::MainWindow *ui;
     std::vector<Account> Accounts;
+    QTcpSocket* clientsocket;
+    Account* new_acc;
 };
 #endif // MAINWINDOW_H

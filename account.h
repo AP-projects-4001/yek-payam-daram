@@ -27,7 +27,9 @@ public:
     void set_email(QString email_inp);
     QString get_email();
     void set_Date_birthday(int year,int month,int day);
-
+    int get_yDate();
+    int get_mDate();
+    int get_dDate();
 };
 
 #endif // ACCOUNT_H

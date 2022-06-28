@@ -14,9 +14,6 @@ Date::Date()
 
 void Date::set_day(int day_inp)
 {
-    if (day_inp > 31 || day_inp <0)
-        throw day_inp;
-
     day = day_inp;
 }
 
@@ -28,8 +25,6 @@ int Date::get_day()
 
 void Date::set_month(int month_inp)
 {
-    if (month > 12 || month < 0)
-        throw out_of_range("month is wrong");
     month = month_inp;
 }
 
@@ -42,8 +37,6 @@ int Date::get_month()
 
 void Date::set_year(int year_inp)
 {
-    if (year < 0 || year > 2012)
-        throw DateException("wrong year");
     year = year_inp;
 }
 

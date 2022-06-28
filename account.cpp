@@ -52,3 +52,16 @@ void Account::set_Date_birthday(int year,int month, int day)
     birthday.set_day(day);
 }
 
+int Account::get_yDate()
+{
+    return birthday.get_year();
+}
+int Account::get_mDate()
+{
+    return birthday.get_month();
+}
+int Account::get_dDate()
+{
+    return birthday.get_day();
+}
+

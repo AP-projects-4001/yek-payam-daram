@@ -23,21 +23,9 @@ int TimeKhodam::getter_min() {
     return minute;
 }
 void TimeKhodam::setter_hour(int hour_inp) {
-    if (hour_inp > 24 || hour_inp < 0)
-    {
-        TimeException error("wrong hour!");
-        throw error;
-    }
-    else
         hour = hour_inp;
 }
 void TimeKhodam::setter_min(int min_inp) {
-    if (min_inp > 59 || min_inp < 0)
-    {
-        TimeException error("wrong minute!");
-        throw error;
-    }
-    else
         minute = min_inp;
 }
 string TimeKhodam::time_of_day() const
