@@ -91,6 +91,16 @@
     <string>Log in</string>
    </property>
   </widget>
+  <widget class="QListWidget" name="loginstatus">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>350</y>
+     <width>331</width>
+     <height>41</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

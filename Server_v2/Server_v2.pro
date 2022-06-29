@@ -1,8 +1,8 @@
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += network
 
-QT += network
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
@@ -12,30 +12,23 @@ CONFIG += c++11
 
 SOURCES += \
     account.cpp \
+    main.cpp \
+    myserver.cpp \
+    mythread.cpp \
     date.cpp \
     datetime.cpp \
-    log_in.cpp \
-    main.cpp \
-    mainpage.cpp \
-    mainwindow.cpp \
-    sign_in.cpp \
     timekhodam.cpp
 
 HEADERS += \
     account.h \
+    myserver.h \
+    mythread.h \
     date.h \
     datetime.h \
-    log_in.h \
-    mainpage.h \
-    mainwindow.h \
-    sign_in.h \
     timekhodam.h
 
 FORMS += \
-    log_in.ui \
-    mainpage.ui \
-    mainwindow.ui \
-    sign_in.ui
+    myserver.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

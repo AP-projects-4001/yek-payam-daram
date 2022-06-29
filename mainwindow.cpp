@@ -11,6 +11,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    qDebug() << "connecting...";
+
+
 }
 
 MainWindow::~MainWindow()
@@ -18,34 +22,40 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+//sign in function
 
 void MainWindow::on_signin_openwindow_Button_clicked()
 {
     Sign_in* d = new Sign_in(this);
     d->show();
-    clientsocket = new QTcpSocket();
-    clientsocket->connectToHost("127.0.0.1", 1025);
-    qDebug() << "connecting...";
-
+    clientsocket = new QTcpSocket(this);
 
     connect(d,SIGNAL(recive_info(QString,QString,QString,QString,int,int,int)),this,SLOT(submit_acc(QString,QString,QString,QString,int,int,int)));
 
-    connect(clientsocket,SIGNAL(connected()),this, SLOT(connecttoserver()));
-
-
-    connect(clientsocket,SIGNAL(bytesWritten(qint64)),this,SLOT(writingdata()));
-    connect(clientsocket,SIGNAL(readyRead()),this,SLOT(readingdata()));
-    connect(clientsocket,SIGNAL(disconnected()),this,SLOT(dissconnect()));
     }
 
 void MainWindow::submit_acc(QString nameinp, QString emailinp, QString phonenuminp, QString passinp, int year, int month, int day)
 {
-    Account new_acc;
-    new_acc.set_user_name(nameinp);
-    new_acc.set_email(emailinp);
-    new_acc.set_number(phonenuminp);
-    new_acc.set_password(passinp);
-    new_acc.set_Date_birthday(year,month,day);
+    clientsocket = new QTcpSocket(this);
+    new_acc = new Account;
+    new_acc->set_user_name(nameinp);
+    new_acc->set_email(emailinp);
+    new_acc->set_number(phonenuminp);
+    new_acc->set_password(passinp);
+    new_acc->set_Date_birthday(year,month,day);
+    Accounts.push_back(new_acc);
+
+    clientsocket->connectToHost("127.0.0.1", 1025);
+
+    connect(clientsocket,SIGNAL(connected()),this, SLOT(connecttoserver()));
+
+    connect(clientsocket,SIGNAL(bytesWritten(qint64)),this,SLOT(writingdata()));
+
+    connect(clientsocket,SIGNAL(readyRead()),this,SLOT(readingdata()));
+
+    connect(clientsocket,SIGNAL(disconnected()),this,SLOT(dissconnect()));
+
+
 }
 
 void MainWindow::readingdata()
@@ -57,33 +67,48 @@ void MainWindow::readingdata()
 
 void MainWindow::writingdata()
 {
+
     qDebug() << "writing data ... ";
 }
 
 void MainWindow::connecttoserver()
 {
     qDebug() << "connected.";
-//    QByteArray *br = new QByteArray(new_acc->get_user_name().toUtf8());
-      clientsocket->write("salam farmande");
-      std::string ba = new_acc->get_user_name().toStdString();
-//      const char *c_str2 = ba.data();
-      QByteArray ab = new_acc->get_email().toUtf8();
-      clientsocket->write(ab);
-//    QByteArray br1 = new_acc->get_email().toUtf8();
-//    clientsocket->write(br1);
-//    QByteArray br2 = new_acc->get_number().toUtf8();
-//    clientsocket->write(br2);
-//    QByteArray br3 = new_acc->get_password().toUtf8();
-//    clientsocket->write(br3);
-//    QByteArray qbaint1;
-//    qbaint1.setNum(new_acc->get_yDate());
-//    clientsocket->write(qbaint1);
-//    QByteArray qbaint2 ;
-//    qbaint2.setNum(new_acc->get_mDate());
-//    clientsocket->write(qbaint2);
-//    QByteArray qbaint3 ;
-//    qbaint3.setNum(new_acc->get_dDate());
-//    clientsocket->write(qbaint3);
+    clientsocket->write("signin");
+    clientsocket->write(",");
+    std::string ba = Accounts[Accounts.size()-1]->get_user_name().toStdString();
+    const char *c_str1 = ba.data();
+    clientsocket->write(c_str1);
+    clientsocket->write(",");
+
+        std::string ba1 = Accounts[Accounts.size()-1]->get_email().toStdString();
+        const char *c_str2 = ba1.data();
+        clientsocket->write(c_str2);
+        clientsocket->write(",");
+
+        std::string ba2 = Accounts[Accounts.size()-1]->get_number().toStdString();
+        const char *c_str3 = ba2.data();
+        clientsocket->write(c_str3);
+        clientsocket->write(",");
+
+        std::string ba3 = Accounts[Accounts.size()-1]->get_password().toStdString();
+        const char *c_str4 = ba3.data();
+        clientsocket->write(c_str4);
+        clientsocket->write(",");
+
+    QByteArray qbaint1;
+    qbaint1.setNum(new_acc->get_yDate());
+    clientsocket->write(qbaint1);
+    clientsocket->write(",");
+    QByteArray qbaint2 ;
+    qbaint2.setNum(new_acc->get_mDate());
+    clientsocket->write(qbaint2);
+    clientsocket->write(",");
+    QByteArray qbaint3 ;
+    qbaint3.setNum(new_acc->get_dDate());
+    clientsocket->write(qbaint3);
+
+
 }
 
 void MainWindow::dissconnect()
@@ -91,10 +116,50 @@ void MainWindow::dissconnect()
     qDebug() << "connection lost!";
 }
 
+
+///////////////////////////////////////////////////////////////
+
+//log in function
+
 void MainWindow::on_Login_openwindow_Button_clicked()
 {
-    Log_in* d = new Log_in(this);
+    d = new Log_in(this);
     d->show();
+    clientsocket = new QTcpSocket(this);
+    connect(d,SIGNAL(login_info(QString,QString)),this,SLOT(login_acc(QString,QString)));
+
+}
+
+void MainWindow::login_acc(QString user_inp, QString pass)
+{
+    clientsocket->connectToHost("127.0.0.1", 1025);
+
+//    while(!clientsocket->waitForReadyRead(-1))
+//        qDebug() << "data recive" << clientsocket->readAll();
+    clientsocket->write("login");
+    clientsocket->write(",");
+    QByteArray us = user_inp.toUtf8();
+    clientsocket->write(us);
+    clientsocket->write(",");
+    QByteArray pa = pass.toUtf8();
+    clientsocket->write(pa);
+    clientsocket->waitForBytesWritten(-1);
+    qDebug() << "massege sent";
+    while(clientsocket->waitForReadyRead(-1))
+    {
+
+        QByteArray datain = clientsocket->readAll();
+        qDebug() << "data recive" << datain;
+        d->login_status((QString)datain);
+        if (datain == "log in secessfuly")
+        {
+            delete d;
+            mainpagewindow = new MainPage(this);
+            mainpagewindow->show();
+        }
+        break;
+    }
+
 }
 
 

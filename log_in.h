@@ -17,6 +17,12 @@ public:
 
 private:
     Ui::Log_in *ui;
+
+signals:
+    void login_info(QString,QString);
+public slots:
+    void on_pushButton_clicked();
+    void login_status(QString msg);
 };
 
 #endif // LOG_IN_H

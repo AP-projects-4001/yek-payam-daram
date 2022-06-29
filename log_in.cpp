@@ -12,3 +12,18 @@ Log_in::~Log_in()
 {
     delete ui;
 }
+
+
+void Log_in::on_pushButton_clicked()
+{
+    emit login_info(ui->lineUserName->text(), ui->linePassword->text());
+}
+
+void Log_in::login_status(QString msg)
+{
+    ui->loginstatus->clear();
+    ui->loginstatus->addItem(msg);
+
+
+}
+
