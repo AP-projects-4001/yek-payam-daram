@@ -8,13 +8,15 @@
 #include <QJsonArray>
 #include <string>
 #include <QDebug>
+#include <QByteArray>
 
-MyThread::MyThread(qintptr ID, QObject *parent) :
+MyThread::MyThread(std::vector<Account*>& Accounts,qintptr ID, QObject *parent) :
     QThread(parent)
 {
+    accounts = Accounts;
     this->socketDescriptor = ID;
 
-    loading_data();
+    //loading_data();
 }
 
 void MyThread::run()
@@ -71,11 +73,17 @@ void MyThread::readyRead()
         qDebug() << "sign up";
         signin(list1[1],list1[2],list1[3],list1[4],list1[5].toInt(),list1[6].toInt(),list1[7].toInt());
     }
-    else
+    else if (list1[0] == "login")
     {
         qDebug() << list1[0] << list1[1] << list1[2];
         qDebug() << "log in";
         login(list1[1],list1[2]);
+    }
+    else
+    {
+        socket->write("salam cmd user");
+        socket->flush();
+        socket->waitForBytesWritten(-1);
     }
 
     // will write on server side window
@@ -106,7 +114,7 @@ void MyThread::signin(QString user, QString email, QString num, QString pass, in
     new_acc->set_password(pass);
     new_acc->set_Date_birthday(year, month, day);
     accounts.push_back(new_acc);
-    saving_data();
+    //saving_data();
 
 }
 
@@ -123,8 +131,12 @@ void MyThread::login(QString user, QString pass)
             {
               qDebug() << "log in secessfuly ";
               socket->write("log in secessfuly");
+              socket->flush();
               socket->waitForBytesWritten(-1);
+
               flag = 1;
+              account_run(accounts[i]->get_ID_NUM());
+              break;
             }
             else
             {
@@ -146,63 +158,77 @@ void MyThread::login(QString user, QString pass)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void MyThread::account_run(int ID_num_inp)
+{
+    int selected = ID_num_inp;
+
+    socket->write("Welcome ");
+    qDebug() << socketDescriptor;
+    QByteArray us = accounts[selected]->get_user_name().toUtf8();
+    socket->write(us);
+    socket->waitForBytesWritten(-1);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 //file handling
 
-void MyThread::saving_data()
-{
-    qDebug() << "saving data ... ";
-    QFile ofile{"C:/cpp files/project/database.json"};
-    ofile.open(QIODevice::WriteOnly);
-    QJsonObject j;
-    QJsonArray b;
-    for (int i = 0; i<(int)accounts.size() ;i++ )
-    {
-        QJsonObject people;
-        people["User"] = accounts[i]->get_user_name();
-        people["Email"] = accounts[i]->get_email();
-        people["Number"] = accounts[i]->get_number();
-        people["Pass"] = accounts[i]->get_password();
-        people["year"] = accounts[i]->get_yDate();
-        people["month"] = accounts[i]->get_mDate();
-        people["day"] = accounts[i]->get_dDate();
-        b.append(people);
+//void MyThread::saving_data()
+//{
+//    qDebug() << "saving data ... ";
+//    QFile ofile{"C:/cpp files/project/database.json"};
+//    ofile.open(QIODevice::WriteOnly);
+//    QJsonObject j;
+//    QJsonArray b;
+//    for (int i = 0; i<(int)accounts.size() ;i++ )
+//    {
+//        QJsonObject people;
+//        people["User"] = accounts[i]->get_user_name();
+//        people["Email"] = accounts[i]->get_email();
+//        people["Number"] = accounts[i]->get_number();
+//        people["Pass"] = accounts[i]->get_password();
+//        people["year"] = accounts[i]->get_yDate();
+//        people["month"] = accounts[i]->get_mDate();
+//        people["day"] = accounts[i]->get_dDate();
+//        b.append(people);
 
-    }
-    j["accounts"] = b;
-    QJsonDocument d(j);
+//    }
+//    j["accounts"] = b;
+//    QJsonDocument d(j);
 
-    ofile.write(d.toJson());
-    ofile.flush();
-    ofile.close();
-}
+//    ofile.write(d.toJson());
+//    ofile.flush();
+//    ofile.close();
+//}
 
-void MyThread::loading_data()
-{
-    QFile ifile{"C:/cpp files/project/database.json"};
-    ifile.open(QIODevice::ReadOnly);
-    QByteArray b = ifile.readAll();
-    QJsonDocument d = QJsonDocument::fromJson(b);
-    QJsonObject s = d.object();
+//void MyThread::loading_data()
+//{
+//    QFile ifile{"C:/cpp files/project/database.json"};
+//    ifile.open(QIODevice::ReadOnly);
+//    QByteArray b = ifile.readAll();
+//    QJsonDocument d = QJsonDocument::fromJson(b);
+//    QJsonObject s = d.object();
 
 
-    foreach(QJsonValue x, s["accounts"].toArray())
-    {
-        int i = 0;
-        Account* ipeople = new Account;
-        QJsonObject t = x.toObject();
-        ipeople->set_user_name(t["User"].toString());
-        ipeople->set_email(t["Email"].toString());
-        ipeople->set_number(t["Number"].toString());
-        ipeople->set_password(t["Pass"].toString());
-        ipeople->set_Date_birthday(t["year"].toInt(), t["month"].toInt(), t["day"].toInt());
-        accounts.push_back(ipeople);
-        i++;
-    }
-        for(int i = 0; i < (int)accounts.size(); i++)
-        {
-            qDebug() << accounts[i]->get_user_name();
-            qDebug() << accounts[i]->get_email();
-        }
+//    foreach(QJsonValue x, s["accounts"].toArray())
+//    {
+//        int i = 0;
+//        Account* ipeople = new Account;
+//        QJsonObject t = x.toObject();
+//        ipeople->set_user_name(t["User"].toString());
+//        ipeople->set_email(t["Email"].toString());
+//        ipeople->set_number(t["Number"].toString());
+//        ipeople->set_password(t["Pass"].toString());
+//        ipeople->set_Date_birthday(t["year"].toInt(), t["month"].toInt(), t["day"].toInt());
+//        accounts.push_back(ipeople);
+//        i++;
+//    }
+//        for(int i = 0; i < (int)accounts.size(); i++)
+//        {
+//            qDebug() << accounts[i]->get_user_name();
+//            qDebug() << accounts[i]->get_email();
+//        }
 
-}
+//}
+
+
 

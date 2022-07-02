@@ -13,7 +13,7 @@ class MyThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit MyThread(qintptr ID ,QObject *parent = 0);
+    explicit MyThread(std::vector<Account*>& Accounts,qintptr ID ,QObject *parent = 0);
 
     void run();
 
@@ -21,12 +21,14 @@ signals:
        void error(QTcpSocket::SocketError socketerror);
 
 public slots:
+
        void readyRead();
        void disconnected();
        void signin(QString user, QString email, QString num, QString pass, int year, int month, int day);
        void login(QString user, QString pass);
-       void saving_data();
-       void loading_data();
+//       void saving_data();
+//       void loading_data();
+       void account_run(int ID_num_inp);
 
 private:
     QTcpSocket *socket;

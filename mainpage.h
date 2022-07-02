@@ -17,6 +17,11 @@ public:
 
 private:
     Ui::MainPage *ui;
+
+public slots:
+    void load_chatrooms(QString wel);
+private slots:
+    void on_pushButton_clicked();
 };
 
 #endif // MAINPAGE_H

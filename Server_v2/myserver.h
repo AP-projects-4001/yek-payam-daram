@@ -19,11 +19,13 @@ public:
 signals:
 
 public slots:
-
+    void saving_data();
+    void loading_data();
 protected:
     void incomingConnection(qintptr socketDescriptor);
-private:
-    std::vector<Account*>* Accounts;
+
+public:
+    std::vector<Account*> Accounts;
 
 };
 #endif // MYSERVER_H

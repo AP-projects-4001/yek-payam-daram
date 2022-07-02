@@ -12,8 +12,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    qDebug() << "connecting...";
-
 
 }
 
@@ -36,7 +34,7 @@ void MainWindow::on_signin_openwindow_Button_clicked()
 
 void MainWindow::submit_acc(QString nameinp, QString emailinp, QString phonenuminp, QString passinp, int year, int month, int day)
 {
-    clientsocket = new QTcpSocket(this);
+    //clientsocket = new QTcpSocket(this);
     new_acc = new Account;
     new_acc->set_user_name(nameinp);
     new_acc->set_email(emailinp);
@@ -156,10 +154,16 @@ void MainWindow::login_acc(QString user_inp, QString pass)
             delete d;
             mainpagewindow = new MainPage(this);
             mainpagewindow->show();
+
         }
         break;
     }
-
+    while(clientsocket->waitForReadyRead(-1))
+    {
+        QByteArray datain = clientsocket->readAll();
+        mainpagewindow->load_chatrooms((QString)datain);
+        break;
+    }
 }
 
 
