@@ -79,20 +79,20 @@ void MainWindow::connecttoserver()
     clientsocket->write(c_str1);
     clientsocket->write(",");
 
-        std::string ba1 = Accounts[Accounts.size()-1]->get_email().toStdString();
-        const char *c_str2 = ba1.data();
-        clientsocket->write(c_str2);
-        clientsocket->write(",");
+    std::string ba1 = Accounts[Accounts.size()-1]->get_email().toStdString();
+    const char *c_str2 = ba1.data();
+    clientsocket->write(c_str2);
+    clientsocket->write(",");
 
-        std::string ba2 = Accounts[Accounts.size()-1]->get_number().toStdString();
-        const char *c_str3 = ba2.data();
-        clientsocket->write(c_str3);
-        clientsocket->write(",");
+    std::string ba2 = Accounts[Accounts.size()-1]->get_number().toStdString();
+    const char *c_str3 = ba2.data();
+    clientsocket->write(c_str3);
+    clientsocket->write(",");
 
-        std::string ba3 = Accounts[Accounts.size()-1]->get_password().toStdString();
-        const char *c_str4 = ba3.data();
-        clientsocket->write(c_str4);
-        clientsocket->write(",");
+    std::string ba3 = Accounts[Accounts.size()-1]->get_password().toStdString();
+    const char *c_str4 = ba3.data();
+    clientsocket->write(c_str4);
+    clientsocket->write(",");
 
     QByteArray qbaint1;
     qbaint1.setNum(new_acc->get_yDate());
@@ -149,22 +149,127 @@ void MainWindow::login_acc(QString user_inp, QString pass)
         QByteArray datain = clientsocket->readAll();
         qDebug() << "data recive" << datain;
         d->login_status((QString)datain);
+
+
         if (datain == "log in secessfuly")
         {
             delete d;
-            mainpagewindow = new MainPage(this);
-            mainpagewindow->show();
+
+            myAccount();
 
         }
         break;
     }
-    while(clientsocket->waitForReadyRead(-1))
-    {
-        QByteArray datain = clientsocket->readAll();
-        mainpagewindow->load_chatrooms((QString)datain);
-        break;
-    }
+
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// account functions
+
+
+void MainWindow::myAccount()
+{
+
+    updata_clinet_vector();
+    mainpagewindow = new MainPage(Accounts,this);
+    mainpagewindow->show();
+
+    // recive data from server
+    update_chatroomlist();
+
+    mainpagewindow->load_chatrooms(chatrooms_name);
+
+    connect(mainpagewindow, SIGNAL(create_chatroom(QString,QString,QString)),this, SLOT(createchat(QString,QString,QString)));
+    connect(mainpagewindow, SIGNAL(send_massage(QString,QString,QString)),this,SLOT(send_massage(QString,QString,QString)));
+    connect(mainpagewindow, SIGNAL(select_chatroom(QString)),this, SLOT(select_chat(QString)));
 }
 
 
+// crate chatroom and show in window
+
+void MainWindow::createchat(QString order, QString type, QString name)
+{
+    clientsocket->write(order.toUtf8(),order.toUtf8().size());
+    clientsocket->write(",");
+    clientsocket->waitForBytesWritten(-1);
+    clientsocket->write(type.toUtf8(),type.toUtf8().size());
+    clientsocket->write(",");
+    clientsocket->waitForBytesWritten(-1);
+    clientsocket->write(name.toUtf8(),name.toUtf8().size());
+    clientsocket->waitForBytesWritten(-1);
+
+    // recive data from server
+    update_chatroomlist();
+
+    mainpagewindow->load_chatrooms(chatrooms_name);
+
+}
+
+
+
+void MainWindow::send_massage(QString order, QString text, QString chatroomname)
+{
+    QByteArray send = order.toUtf8();
+    clientsocket->write(send);
+    clientsocket->waitForBytesWritten(-1);
+    clientsocket->write(",");
+
+    QByteArray countain = text.toUtf8();
+    clientsocket->write(countain);
+    clientsocket->waitForBytesWritten(-1);
+    clientsocket->write(",");
+
+    QByteArray chatname = chatroomname.toUtf8();
+    clientsocket->write(chatname);
+    clientsocket->waitForBytesWritten(-1);
+}
+
+void MainWindow::select_chat(QString chatroomname)
+{
+    clientsocket->write(chatroomname.toUtf8(), chatroomname.toUtf8().size());
+    clientsocket->waitForBytesWritten(-1);
+}
+
+///////////////////////////////////////////////////////////////////////////
+//update client vector from server
+
+void MainWindow::updata_clinet_vector()
+{
+    int size_vector = 0;
+    QStringList list0;
+
+    while(clientsocket->waitForReadyRead(-1))
+    {
+        QByteArray Data = clientsocket->readAll();
+        QStringList qData = QString(Data).split(":");
+        size_vector = qData[0].toInt();
+        list0 = qData[1].split('/');
+        break;
+    }
+
+    for (int i = 0; i < size_vector; i++) {
+        QStringList list1 = list0[i].split(",");
+        Account* newacc = new Account;
+        newacc->set_user_name(list1[0]);
+        newacc->set_email(list1[1]);
+        newacc->set_number(list1[2]);
+        for (int j = 4; j < list1[3].toInt() ; j++ ) {
+            newacc->frend.push_back(list1[j]);
+        }
+        Accounts.push_back(newacc);
+    }
+
+}
+
+///////////////////////////////////////////////////////////////////////////
+//update chatroom list from server
+
+void MainWindow::update_chatroomlist()
+{
+    while(clientsocket->waitForReadyRead(-1))
+    {
+        QByteArray Data = clientsocket->readAll();
+        chatrooms_name = ((QString)Data).split(",");
+    }
+}
 

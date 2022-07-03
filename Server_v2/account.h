@@ -15,7 +15,7 @@ private:
     QString password;
     QString email;
     Date birthday;
-    std::vector<Account> frend;
+
     //std::vector<Chatroom*> chatrooms;
 
     int ID_NUM;
@@ -35,7 +35,9 @@ public:
     int get_mDate();
     int get_dDate();
     int get_ID_NUM();
+public:
     static int idgenerator;
+    std::vector<QString> frend;
 };
 
 #endif // ACCOUNT_H

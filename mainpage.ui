@@ -23,7 +23,11 @@
       <height>481</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="chatroomsLayout"/>
+    <layout class="QVBoxLayout" name="chatroomsLayout">
+     <item>
+      <widget class="QListWidget" name="Chatrooms_listwidget"/>
+     </item>
+    </layout>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
@@ -71,20 +75,20 @@
       <x>310</x>
       <y>0</y>
       <width>671</width>
-      <height>41</height>
+      <height>40</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QCommandLinkButton" name="commandLinkButton">
        <property name="text">
-        <string>TextLabel</string>
+        <string>CommandLinkButton</string>
        </property>
       </widget>
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="AddChatroomButton">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -103,11 +107,14 @@
       <x>0</x>
       <y>0</y>
       <width>301</width>
-      <height>41</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="contextMenuPolicy">
      <enum>Qt::DefaultContextMenu</enum>
+    </property>
+    <property name="text">
+     <string>Setting</string>
     </property>
    </widget>
   </widget>

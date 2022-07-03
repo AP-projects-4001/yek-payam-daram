@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QStringList chatrooms_name;
 
 private slots:
     void on_signin_openwindow_Button_clicked();
@@ -35,12 +36,27 @@ private slots:
 
     void dissconnect();
 
+    void myAccount();
 
+    //orders
+    void createchat(QString order, QString type, QString name);
+
+    void send_massage(QString order,QString text,QString chatroomname);
+
+    void select_chat(QString chatroomname);
+
+    void updata_clinet_vector();
+
+    void update_chatroomlist();
 private:
     Ui::MainWindow *ui;
     std::vector<Account*> Accounts;
     QTcpSocket* clientsocket;
+
+    //for sign up
     Account* new_acc;
+
+    // dialogs
     Log_in* d;
     MainPage* mainpagewindow;
 

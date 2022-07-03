@@ -26,9 +26,9 @@ public slots:
        void disconnected();
        void signin(QString user, QString email, QString num, QString pass, int year, int month, int day);
        void login(QString user, QString pass);
-//       void saving_data();
-//       void loading_data();
+
        void account_run(int ID_num_inp);
+       void updata_clinet_vector();
 
 private:
     QTcpSocket *socket;

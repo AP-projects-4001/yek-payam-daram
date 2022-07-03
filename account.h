@@ -14,7 +14,7 @@ private:
     QString password;
     QString email;
     Date birthday;
-    std::vector<Account> frend;
+
 
 public:
     Account();
@@ -30,6 +30,9 @@ public:
     int get_yDate();
     int get_mDate();
     int get_dDate();
+
+public:
+    std::vector<QString> frend;
 };
 
 #endif // ACCOUNT_H

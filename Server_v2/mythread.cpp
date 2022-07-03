@@ -118,6 +118,7 @@ void MyThread::signin(QString user, QString email, QString num, QString pass, in
 
 }
 
+////////////////////////////////////////////////////////////////////////////////
 //log in function
 
 void MyThread::login(QString user, QString pass)
@@ -130,9 +131,12 @@ void MyThread::login(QString user, QString pass)
             if(pass == accounts[i]->get_password())
             {
               qDebug() << "log in secessfuly ";
-              socket->write("log in secessfuly");
-              socket->flush();
+              QString secessfuly_str = "log in secessfuly";
+              QByteArray secessfuly_byte = secessfuly_str.toUtf8();
+              socket->write(secessfuly_byte, secessfuly_byte.size());
+              //socket->flush();
               socket->waitForBytesWritten(-1);
+
 
               flag = 1;
               account_run(accounts[i]->get_ID_NUM());
@@ -141,7 +145,8 @@ void MyThread::login(QString user, QString pass)
             else
             {
                 qDebug() << "your pass is wrong ";
-                socket->write("your pass is wrong!!!");
+                QString wrong_str = "your pass is wrong!!!";
+                socket->write(wrong_str.toUtf8(),wrong_str.toUtf8().size());
                 socket->waitForBytesWritten(-1);
                 flag = 1;
             }
@@ -161,74 +166,46 @@ void MyThread::login(QString user, QString pass)
 void MyThread::account_run(int ID_num_inp)
 {
     int selected = ID_num_inp;
-
-    socket->write("Welcome ");
-    qDebug() << socketDescriptor;
-    QByteArray us = accounts[selected]->get_user_name().toUtf8();
-    socket->write(us);
-    socket->waitForBytesWritten(-1);
+    updata_clinet_vector();
+//    socket->write("Welcome ");
+//    qDebug() << socketDescriptor;
+//    QByteArray us = accounts[selected]->get_user_name().toUtf8();
+//    socket->write(us);
+//    socket->waitForBytesWritten(-1);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-//file handling
+void MyThread::updata_clinet_vector()
+{
+    QString size = QString::number((int)accounts.size());
+    QByteArray size_v = size.toUtf8();
+    socket->write(size_v);
+    socket->write(":");
+    socket->waitForBytesWritten(-1);
 
-//void MyThread::saving_data()
-//{
-//    qDebug() << "saving data ... ";
-//    QFile ofile{"C:/cpp files/project/database.json"};
-//    ofile.open(QIODevice::WriteOnly);
-//    QJsonObject j;
-//    QJsonArray b;
-//    for (int i = 0; i<(int)accounts.size() ;i++ )
-//    {
-//        QJsonObject people;
-//        people["User"] = accounts[i]->get_user_name();
-//        people["Email"] = accounts[i]->get_email();
-//        people["Number"] = accounts[i]->get_number();
-//        people["Pass"] = accounts[i]->get_password();
-//        people["year"] = accounts[i]->get_yDate();
-//        people["month"] = accounts[i]->get_mDate();
-//        people["day"] = accounts[i]->get_dDate();
-//        b.append(people);
+    for (int i = 0; i<(int)accounts.size() ;i++ )
+    {
+        QByteArray user = accounts[i]->get_user_name().toUtf8();
+        socket->write(user);
+        socket->write(",");
+        QByteArray email = accounts[i]->get_email().toUtf8();
+        socket->write(email);
+        socket->write(",");
+        QByteArray number = accounts[i]->get_number().toUtf8();
+        socket->write(number);
+        socket->write(",");
+        QString size_f = QString::number((int)accounts[i]->frend.size());
+        QByteArray size_friend = size_f.toUtf8();
+        socket->write(size_friend);
 
-//    }
-//    j["accounts"] = b;
-//    QJsonDocument d(j);
-
-//    ofile.write(d.toJson());
-//    ofile.flush();
-//    ofile.close();
-//}
-
-//void MyThread::loading_data()
-//{
-//    QFile ifile{"C:/cpp files/project/database.json"};
-//    ifile.open(QIODevice::ReadOnly);
-//    QByteArray b = ifile.readAll();
-//    QJsonDocument d = QJsonDocument::fromJson(b);
-//    QJsonObject s = d.object();
-
-
-//    foreach(QJsonValue x, s["accounts"].toArray())
-//    {
-//        int i = 0;
-//        Account* ipeople = new Account;
-//        QJsonObject t = x.toObject();
-//        ipeople->set_user_name(t["User"].toString());
-//        ipeople->set_email(t["Email"].toString());
-//        ipeople->set_number(t["Number"].toString());
-//        ipeople->set_password(t["Pass"].toString());
-//        ipeople->set_Date_birthday(t["year"].toInt(), t["month"].toInt(), t["day"].toInt());
-//        accounts.push_back(ipeople);
-//        i++;
-//    }
-//        for(int i = 0; i < (int)accounts.size(); i++)
-//        {
-//            qDebug() << accounts[i]->get_user_name();
-//            qDebug() << accounts[i]->get_email();
-//        }
-
-//}
+        for (int j = 0; j < (int)accounts[i]->frend.size(); j++)
+        {
+            socket->write(",");
+            socket->write(accounts[i]->frend[j].toUtf8());
+        }
+        socket->write("/");
+    }
+    socket->waitForBytesWritten(-1);
+}
 
 
 

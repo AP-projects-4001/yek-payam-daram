@@ -21,6 +21,7 @@ signals:
 public slots:
     void saving_data();
     void loading_data();
+
 protected:
     void incomingConnection(qintptr socketDescriptor);
 
