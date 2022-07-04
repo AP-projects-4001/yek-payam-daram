@@ -14,13 +14,10 @@ protected:
     std::vector <Account> members;
     std::string name;
 public:
-    ChatRoom_abs()
-    {
-
-    }
+    ChatRoom_abs(){};
     ~ChatRoom_abs(){};
     int sendMessage(std::string txt,std::string user_name) ;
-    virtual void setName(std::string namein);
+    virtual void setName(std::string namein){};
     void remove_room() ;
 };
 

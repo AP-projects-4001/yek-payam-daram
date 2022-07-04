@@ -10,7 +10,7 @@
 #include <QDebug>
 
 MyThread::MyThread(qintptr ID , std::vector<Account>& accs, std::vector<ChatRoom_abs*>& chats ,QObject *parent ) :
-    QThread(parent) ,accounts(accs),chatRooms(chats)
+    QThread(parent) ,accounts(accs),chats(chats)
 {
     this->socketDescriptor = ID;
 
@@ -244,9 +244,9 @@ void MyThread::create_chatRoom()
     if(str_type == "private"){
         for(unsigned long int i = 0; i < accounts.size(); i++){
             if(accounts[i].get_user_name().toStdString() == str_name){
-                Private_chat* chat = new Private_chat;
+                ChatRoom_abs* chat = new Private_chat;
                 chat->setName(str_name);
-                chatRooms.push_back(chat);
+                chats.push_back(chat);
                 return;
             }
         }

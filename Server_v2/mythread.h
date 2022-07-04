@@ -35,7 +35,7 @@ private:
     QTcpSocket *socket;
     qintptr socketDescriptor;
     std::vector<Account>& accounts;
-    std::vector<ChatRoom_abs*>& chatRooms;
+    std::vector<ChatRoom_abs*>& chats;
 };
 
 #endif // MYTHREAD_H
