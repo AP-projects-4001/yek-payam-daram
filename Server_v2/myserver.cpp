@@ -1,6 +1,5 @@
 #include "myserver.h"
 #include "ui_myserver.h"
-#include "myserver.h"
 #include "mythread.h"
 
 MyServer::MyServer(QObject *parent) :
@@ -29,7 +28,7 @@ void MyServer::incomingConnection(qintptr socketDescriptor)
     qDebug() << socketDescriptor << " Connecting...";
 
     // Every new connection will be run in a newly created thread
-    MyThread *thread = new MyThread(socketDescriptor, this);
+    MyThread *thread = new MyThread(socketDescriptor, Accounts, ChatRooms, this);
 
     // connect signal/slot
     // once a thread is not needed, it will be beleted later

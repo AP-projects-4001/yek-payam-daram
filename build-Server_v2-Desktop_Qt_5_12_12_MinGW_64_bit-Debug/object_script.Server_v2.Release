@@ -1,0 +1,12 @@
+release/account.o
+release/main.o
+release/message.o
+release/myserver.o
+release/mythread.o
+release/date.o
+release/chatroom_abs.o
+release/datetime.o
+release/private_chat.o
+release/timekhodam.o
+release/moc_myserver.o
+release/moc_mythread.o

@@ -7,14 +7,15 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include "account.h"
+#include "chatroom_abs.h"
+#include "private_chat.h"
 #include <vector>
 
 class MyThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit MyThread(qintptr ID ,QObject *parent = 0);
-
+    MyThread(qintptr ID , std::vector<Account>& accs, std::vector<ChatRoom_abs*>& chats ,QObject *parent = 0);
     void run();
 
 signals:
@@ -27,13 +28,14 @@ public slots:
        void login(QString user, QString pass);
        void saving_data();
        void loading_data();
+       void myAccount(int index);
 
 private:
+    void create_chatRoom();
     QTcpSocket *socket;
     qintptr socketDescriptor;
-private:
-    Account* new_acc;
-    std::vector<Account*> accounts;
+    std::vector<Account>& accounts;
+    std::vector<ChatRoom_abs*>& chatRooms;
 };
 
 #endif // MYTHREAD_H
