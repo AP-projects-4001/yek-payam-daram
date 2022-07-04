@@ -2,12 +2,12 @@
 #define MESSAGE_H
 
 #include <string>
-#include <account.h>
+
 
 class Message
 {
     std:: string text;
-    std::string sender;
+    std:: string sender;
 public:
     Message(std::string txt, std::string _sender);
     void setText(std::string txt);

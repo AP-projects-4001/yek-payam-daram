@@ -7,7 +7,6 @@
 #include <account.h>
 
 class Account;
-class Message;
 class ChatRoom_abs
 {
 protected:
