@@ -184,6 +184,7 @@ int MyThread::find_room(std::string roomName)
                 return i;
         }
     }
+    return -1;      //there is no Chat
 }
 
 void MyThread::create_chatRoom(std::vector<std::string> infos)
@@ -260,5 +261,38 @@ std::vector<std::string> MyThread::split(std::string str, char separator)
         res.push_back(s);
     }
     return res;
+}
+
+void MyThread::updata_clinet_vector()
+{
+    QString size = QString::number((int)accounts.size());
+    QByteArray size_v = size.toUtf8();
+    socket->write(size_v);
+    socket->write(":");
+    socket->waitForBytesWritten(-1);
+
+    for (int i = 0; i<(int)accounts.size() ;i++ )
+    {
+        QByteArray user = accounts[i].get_user_name().toUtf8();
+        socket->write(user);
+        socket->write(",");
+        QByteArray email = accounts[i].get_email().toUtf8();
+        socket->write(email);
+        socket->write(",");
+        QByteArray number = accounts[i].get_number().toUtf8();
+        socket->write(number);
+        socket->write(",");
+        QString size_f = QString::number((int)accounts[i].frend.size());
+        QByteArray size_friend = size_f.toUtf8();
+        socket->write(size_friend);
+
+        for (int j = 0; j < (int)accounts[i].frend.size(); j++)
+        {
+            socket->write(",");
+            socket->write(accounts[i].frend[j].get_user_name().toUtf8());
+        }
+        socket->write("/");
+    }
+    socket->waitForBytesWritten(-1);
 }
 

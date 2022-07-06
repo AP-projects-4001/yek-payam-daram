@@ -13,6 +13,7 @@ public:
     void setAccount(Account acc) override;
     std::string getType() override {return "Private";};
     std::string getName(std::string name) override;
+    std::string getName()override {};
 };
 
 #endif // PRIVATE_CHAT_H

@@ -28,6 +28,7 @@ public slots:
        void signin(QString user, QString email, QString num, QString pass, int year, int month, int day);
        void login(QString user, QString pass);
        void myAccount();
+       void updata_clinet_vector();
 
 private:
     int find_room(std::string roomName);
