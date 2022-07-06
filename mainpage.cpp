@@ -119,7 +119,7 @@ void MainPage::selectcontact(QString name)
         list_order_type_name.append(name);
         emit create_chatroom(list_order_type_name[0],list_order_type_name[1],list_order_type_name[2]);
     }
-    else if (list_order_type_name[1] == "group")
+    else //if (list_order_type_name[1] == "group")
     {
         Nameofgroup *d = new Nameofgroup(this);
         d->show();
