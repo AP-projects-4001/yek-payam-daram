@@ -14,7 +14,7 @@ MyThread::MyThread(qintptr ID , std::vector<Account>& accs, std::vector<ChatRoom
 {
     this->socketDescriptor = ID;
 
-    loading_data();
+
 }
 
 void MyThread::run()
@@ -113,7 +113,7 @@ void MyThread::signin(QString user, QString email, QString num, QString pass, in
     new_acc.set_password(pass);
     new_acc.set_Date_birthday(year,month,day);
     accounts.push_back(new_acc);
-    saving_data();
+
 
 }
 
@@ -132,7 +132,8 @@ void MyThread::login(QString user, QString pass)
               socket->write("log in secessfuly");
               socket->waitForBytesWritten(-1);
               flag = 1;
-              myAccount(i);
+              acc_index = i;
+              myAccount();
             }
             else
             {
@@ -156,91 +157,29 @@ void MyThread::login(QString user, QString pass)
 
 //file handling
 
-void MyThread::saving_data()
-{
-    qDebug() << "saving data ... ";
-    QFile ofile{"database.json"};
-    ofile.open(QIODevice::WriteOnly);
-    QJsonObject j;
-    QJsonArray b;
-    for (int i = 0; i<(int)accounts.size() ;i++ )
-    {
-        QJsonObject people;
-        people["User"] = accounts[i].get_user_name();
-        people["Email"] = accounts[i].get_email();
-        people["Number"] = accounts[i].get_number();
-        people["Pass"] = accounts[i].get_password();
-        people["year"] = accounts[i].get_yDate();
-        people["month"] = accounts[i].get_mDate();
-        people["day"] = accounts[i].get_dDate();
-        b.append(people);
 
-    }
-    j["accounts"] = b;
-    QJsonDocument d(j);
-
-    ofile.write(d.toJson());
-    ofile.flush();
-    ofile.close();
-}
-
-void MyThread::loading_data()
-{
-    QFile ifile{"database.json"};
-    ifile.open(QIODevice::ReadOnly);
-    QByteArray b = ifile.readAll();
-    QJsonDocument d = QJsonDocument::fromJson(b);
-    QJsonObject s = d.object();
-
-
-    foreach(QJsonValue x, s["accounts"].toArray())
-    {
-        int i = 0;
-        Account ipeople;
-        QJsonObject t = x.toObject();
-        ipeople.set_user_name(t["User"].toString());
-        ipeople.set_email(t["Email"].toString());
-        ipeople.set_number(t["Number"].toString());
-        ipeople.set_password(t["Pass"].toString());
-        ipeople.set_Date_birthday(t["year"].toInt(), t["month"].toInt(), t["day"].toInt());
-        accounts.push_back(ipeople);
-        i++;
-    }
-        for(int i = 0; i < (int)accounts.size(); i++)
-        {
-            qDebug() << accounts[i].get_user_name();
-            qDebug() << accounts[i].get_email();
-        }
-
-}
-
-void MyThread::myAccount(int index)
+void MyThread::myAccount()
 {
     while (true) {
-        QByteArray order;
-        while (socket->waitForReadyRead(-1)) {
-         order = socket->readAll();
+        std::string info = getInfo();
+        std::vector<std::string> infos = split(info,',');
+        if(infos[0] == "create_chatRoom"){         //case 1 (adding a chat_room)
+            create_chatRoom(infos);
         }
-        std::string ord = order.toStdString();
-        if(order == "create_chatRoom"){         //case 1 (adding a chat_room)
-            create_chatRoom();
-        }
-        else if (order == "send_message"){
+        else if (infos[0] == "send_message"){
 
         }
     }
 }
 
-void MyThread::create_chatRoom()
+void MyThread::create_chatRoom(std::vector<std::string> infos)
 {
-    std::string str_info = getInfo();
-
-    std::vector<std::string> infos = split(str_info,',');
-    if(infos[0] == "private"){
+    if(infos[1] == "private"){
         for(unsigned long int i = 0; i < accounts.size(); i++){
-            if(accounts[i].get_user_name().toStdString() == infos[1]){
+            if(accounts[i].get_user_name().toStdString() == infos[2]){
                 ChatRoom_abs* chat = new Private_chat;
-                chat->setName(infos[1]);
+                chat->setAccount(accounts[i]);
+                chat->setAccount(accounts[acc_index]);
                 chats.push_back(chat);
                 return;
             }
@@ -255,10 +194,9 @@ void MyThread::create_chatRoom()
     }
 }
 
-void MyThread::show_chatRooms()
+void MyThread::show_chatRooms(std::vector<std::string> infos)
 {
-    std::string info = getInfo();
-    std::vector <std::string> infos = split(info,',');
+
 }
 
 std::string MyThread::getInfo()

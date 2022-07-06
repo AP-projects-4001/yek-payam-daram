@@ -11,8 +11,17 @@ void Private_chat::sendMessage(std::string txt,std::string user_name)
     messages.push_back(new_message);
 }
 
-void Private_chat::setName(std::string namein)
+void Private_chat::setAccount(Account acc)
 {
-    name = namein;
+    members.push_back(acc);
 }
+
+std::string Private_chat::getName(std::string name)
+{
+    if(members[0].get_user_name().toStdString() == name){
+        return members[1].get_user_name().toStdString();
+    }
+    return members[0].get_user_name().toStdString();
+}
+
 

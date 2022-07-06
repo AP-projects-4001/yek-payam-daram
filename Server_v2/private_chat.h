@@ -5,12 +5,14 @@
 
 class Private_chat : public ChatRoom_abs
 {
-    std::string name;
+
 public:
     Private_chat();
     void sendMessage(std::string txt,std::string user_name) override;
-    void setName(std::string namein) override;
+    std::vector<Account> getAccounts();
+    void setAccount(Account acc) override;
     std::string getType() override {return "Private";};
+    std::string getName(std::string name) override;
 };
 
 #endif // PRIVATE_CHAT_H
