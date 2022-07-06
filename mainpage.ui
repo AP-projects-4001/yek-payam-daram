@@ -18,12 +18,16 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
-      <width>311</width>
-      <height>561</height>
+      <y>40</y>
+      <width>301</width>
+      <height>481</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="chatroomlistLayout"/>
+    <layout class="QVBoxLayout" name="chatroomsLayout">
+     <item>
+      <widget class="QListWidget" name="Chatrooms_listwidget"/>
+     </item>
+    </layout>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
@@ -36,10 +40,10 @@
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QListWidget" name="listWidget"/>
+      <widget class="QListWidget" name="chatlistofownWidget"/>
      </item>
      <item>
-      <widget class="QListWidget" name="listWidget_2"/>
+      <widget class="QListWidget" name="chatlistofsenderWidget"/>
      </item>
     </layout>
    </widget>
@@ -71,10 +75,47 @@
       <x>310</x>
       <y>0</y>
       <width>671</width>
-      <height>41</height>
+      <height>40</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_3"/>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QCommandLinkButton" name="commandLinkButton">
+       <property name="text">
+        <string>CommandLinkButton</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="AddChatroomButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>530</y>
+      <width>301</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add Chatroom</string>
+    </property>
+   </widget>
+   <widget class="QCommandLinkButton" name="settingButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>301</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::DefaultContextMenu</enum>
+    </property>
+    <property name="text">
+     <string>Setting</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

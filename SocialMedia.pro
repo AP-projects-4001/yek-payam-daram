@@ -12,30 +12,39 @@ CONFIG += c++11
 
 SOURCES += \
     account.cpp \
+    contact.cpp \
     date.cpp \
     datetime.cpp \
     log_in.cpp \
     main.cpp \
     mainpage.cpp \
     mainwindow.cpp \
+    nameofgroup.cpp \
     sign_in.cpp \
-    timekhodam.cpp
+    timekhodam.cpp \
+    typechatwin.cpp
 
 HEADERS += \
     account.h \
+    contact.h \
     date.h \
     datetime.h \
     log_in.h \
     mainpage.h \
     mainwindow.h \
+    nameofgroup.h \
     sign_in.h \
-    timekhodam.h
+    timekhodam.h \
+    typechatwin.h
 
 FORMS += \
+    contact.ui \
     log_in.ui \
     mainpage.ui \
     mainwindow.ui \
-    sign_in.ui
+    nameofgroup.ui \
+    sign_in.ui \
+    typechatwin.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -1,8 +1,10 @@
 #include "account.h"
+#include <string>
 
 Account::Account()
 {
-
+    ID_NUM = idgenerator;
+    idgenerator++;
 }
 
 void Account::set_number(QString numberinp)
@@ -63,4 +65,9 @@ int Account::get_mDate()
 int Account::get_dDate()
 {
     return birthday.get_day();
+}
+
+int Account::get_ID_NUM()
+{
+    return ID_NUM;
 }
