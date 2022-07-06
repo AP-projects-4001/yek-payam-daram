@@ -18,7 +18,7 @@ private:
     QString email;
     Date birthday;
     std::vector <Account> frend;
-    std::vector <ChatRoom_abs> chatRooms;
+    std::vector <ChatRoom_abs*> chatRooms;  // Need to be fixed
 public:
     Account();
     void set_number(QString numberinp);

@@ -225,38 +225,61 @@ void MyThread::myAccount(int index)
         if(order == "create_chatRoom"){         //case 1 (adding a chat_room)
             create_chatRoom();
         }
+        else if (order == "send_message"){
+
+        }
     }
 }
 
 void MyThread::create_chatRoom()
 {
-    QByteArray type;
-    while(socket->waitForReadyRead(-1)){
-        type = socket->readAll();
-    }
-    std::string str_type = type.toStdString();
+    std::string str_info = getInfo();
 
-    QByteArray name;
-    while(socket->waitForReadyRead(-1)){
-        name = socket->readAll();
-    }
-    std::string str_name = name.toStdString();
-    if(str_type == "private"){
+    std::vector<std::string> infos = split(str_info,',');
+    if(infos[0] == "private"){
         for(unsigned long int i = 0; i < accounts.size(); i++){
-            if(accounts[i].get_user_name().toStdString() == str_name){
+            if(accounts[i].get_user_name().toStdString() == infos[1]){
                 ChatRoom_abs* chat = new Private_chat;
-                chat->setName(str_name);
+                chat->setName(infos[1]);
                 chats.push_back(chat);
                 return;
             }
         }
         //if username is invalid???
     }
-    else if(str_type == "group"){
+    else if(infos[0] == "group"){
 
     }
     else {
 
     }
+}
+
+void MyThread::show_chatRooms()
+{
+    std::string info = getInfo();
+    std::vector <std::string> infos = split(info,',');
+}
+
+std::string MyThread::getInfo()
+{
+    QByteArray info;
+    while(socket->waitForReadyRead(-1)){
+        info = socket->readAll();
+    }
+    std::string str_info = info.toStdString();
+
+    return str_info;
+}
+
+std::vector<std::string> MyThread::split(std::string str, char separator)
+{
+    std::vector<std::string>res;
+    std::istringstream string(str);
+    std::string s;
+    while (std::getline(string,s,separator)) {
+        res.push_back(s);
+    }
+    return res;
 }
 

@@ -10,6 +10,7 @@
 #include "chatroom_abs.h"
 #include "private_chat.h"
 #include <vector>
+#include <sstream>
 
 class MyThread : public QThread
 {
@@ -32,6 +33,9 @@ public slots:
 
 private:
     void create_chatRoom();
+    void show_chatRooms();
+    std::string getInfo();
+    std::vector<std::string> split(std::string str,char separator);
     QTcpSocket *socket;
     qintptr socketDescriptor;
     std::vector<Account>& accounts;
