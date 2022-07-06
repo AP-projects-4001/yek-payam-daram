@@ -21,6 +21,7 @@ public:
     virtual void setName(std::string namein){};
     virtual std::string getName(){};
     virtual std::string getName(std::string acc){};
+    std::vector<Message> getAccount(){return this->messages;};
     void remove_room() ;
     virtual std::string getType(){};
     virtual void setAccount(Account acc) {};            //private chat

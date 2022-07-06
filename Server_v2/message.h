@@ -11,6 +11,7 @@ class Message
 public:
     Message(std::string txt, std::string _sender);
     void setText(std::string txt);
+    std::string getMessage(){return this->sender + ',' + this->text;};
 };
 
 #endif // MESSAGE_H

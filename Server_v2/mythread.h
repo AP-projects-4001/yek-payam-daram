@@ -30,9 +30,10 @@ public slots:
        void myAccount();
 
 private:
+    int find_room(std::string roomName);
     void create_chatRoom(std::vector<std::string> infos);
     void show_chatRooms();
-    void select_chatRoom();
+    void select_chatRoom(std::string roomName);
     std::string getInfo();
     void sendInfo(std::string);
     std::vector<std::string> split(std::string str,char separator);

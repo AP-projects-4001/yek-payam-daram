@@ -172,6 +172,20 @@ void MyThread::myAccount()
     }
 }
 
+int MyThread::find_room(std::string roomName)
+{
+    for(unsigned long int i = 0; i < chats.size(); i++){
+        if(chats[i]->getType() == "Private"){
+           if(roomName ==  chats[i]->getName(accounts[acc_index].get_user_name().toStdString()))
+               return i;
+        }
+        else{
+            if(roomName == chats[i]->getName())
+                return i;
+        }
+    }
+}
+
 void MyThread::create_chatRoom(std::vector<std::string> infos)
 {
     if(infos[1] == "private"){
@@ -207,6 +221,20 @@ void MyThread::show_chatRooms()
             res += chats[i]->getName();
             if(i < chats.size() - 1)
                 res += ',';
+        }
+    }
+    sendInfo(res);
+}
+
+void MyThread::select_chatRoom(std::string roomName)
+{
+    int index = find_room(roomName);
+    std::string res;
+    std::vector<Message> texts = chats[index]->getChats();
+    for(unsigned long int i = 0; i < texts.size(); i++){
+        res += texts[i].getMessage();
+        if(i < texts.size() - 1){
+            res += ',';
         }
     }
     sendInfo(res);
