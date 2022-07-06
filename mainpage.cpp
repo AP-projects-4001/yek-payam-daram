@@ -5,14 +5,17 @@
 #include <QDebug>
 #include <typechatwin.h>
 #include <contact.h>
+#include "nameofgroup.h"
 
-MainPage::MainPage(std::vector<Account*>& contacts,QWidget *parent) :
+MainPage::MainPage(std::vector<Account*>& contacts, QString username, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainPage)
 {
     ui->setupUi(this);
 
     Accounts_main = contacts;
+
+    current_user = username;
 
 }
 
@@ -21,41 +24,72 @@ MainPage::~MainPage()
     delete ui;
 }
 
+
 //////////////////////////////////////////////////////////////////////
 ///load chatroom and show massages
 
 void MainPage::load_chatrooms(QStringList list_chatroom)
 {
     ui->Chatrooms_listwidget->clear();
-    for (int i = 0; i < 5 ; i++) {
-        ui->Chatrooms_listwidget->addItem("salam");
+
+    for (int i = 0; i < list_chatroom.length() ; i++) {
+        ui->Chatrooms_listwidget->addItem(list_chatroom[i]);
 
     }
     connect(ui->Chatrooms_listwidget, SIGNAL(itemClicked(QListWidgetItem*)),this, SLOT(onListChatroomItemClicked(QListWidgetItem*)));
 }
 
+void MainPage::update_massages_ui(QStringList list_massage)
+{
+    massage_list = list_massage;
+}
+
 void MainPage::onListChatroomItemClicked(QListWidgetItem *item)
 {
     emit select_chatroom(item->text());
-    for (int i = 0; i < 5 ; i++) {
+    chatroom_name = item->text();
 
-        if (ui->Chatrooms_listwidget->item(i) == item)
-        {
-            /////////////////
-            //loading chat here ...
-            /////////////////
-            chatroom_name = ui->Chatrooms_listwidget->item(i)->text();
-            QString name = ui->Chatrooms_listwidget->item(i)->text();
-            qDebug() << name;
+    ui->chatlistofownWidget->clear();
+    ui->chatlistofsenderWidget->clear();
+    if (massage_list[0] != "empty")
+    {
+        for (int i = 0; i < ui->Chatrooms_listwidget->count() ; i++) {
+
+            if (ui->Chatrooms_listwidget->item(i) == item)
+            {
+
+                qDebug() << chatroom_name;
+                for (int j = 0; j < massage_list.length()-1 ; j+=2) {
+                    if (massage_list[j] == current_user)
+                    {
+                        ui->chatlistofownWidget->addItem(massage_list[j]+" :");
+                        ui->chatlistofownWidget->addItem(massage_list[j+1]);
+                        ui->chatlistofsenderWidget->addItem("");
+                        ui->chatlistofsenderWidget->addItem("");
+                    }
+                    else
+                    {
+                        ui->chatlistofsenderWidget->addItem(massage_list[j]+" :");
+                        ui->chatlistofsenderWidget->addItem(massage_list[j+1]);
+                        ui->chatlistofownWidget->addItem("");
+                        ui->chatlistofownWidget->addItem("");
+                    }
+                }//ali,salam,asghar,salam,ali,cheto
+                /////////////////
+                //loading chat here ...
+                /////////////////
+            }
         }
     }
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ///add chattoom functions
 
 void MainPage::on_AddChatroomButton_clicked()
 {
+    list_order_type_name.clear();
     list_order_type_name.append("create_chatroom");
     Typechatwin *d = new Typechatwin(this);
     d->show();
@@ -68,19 +102,38 @@ void MainPage::addchatroom(QString type_chat)
 {
     Contact* d = new Contact(this);
     d->show();
-    d->show_contact(Accounts_main);
+    d->show_contact(type_chat,Accounts_main);
+
     connect(d,SIGNAL(select_contact(QString)),this,SLOT(selectcontact(QString)));
 
+
     list_order_type_name.append(type_chat);
-    //emit create_chatroom(type_chat);
 }
 
 void MainPage::selectcontact(QString name)
 {
-    list_order_type_name.append(name);
-    emit create_chatroom(list_order_type_name[0],list_order_type_name[1],list_order_type_name[2]);
+
+    if (list_order_type_name[1] == "private")
+    {
+        qDebug() << "create private chat";
+        list_order_type_name.append(name);
+        emit create_chatroom(list_order_type_name[0],list_order_type_name[1],list_order_type_name[2]);
+    }
+    else if (list_order_type_name[1] == "group")
+    {
+        Nameofgroup *d = new Nameofgroup(this);
+        d->show();
+        list_order_type_name.append(name);
+        connect(d,SIGNAL(name_ofgroup(QString)),this, SLOT(set_name_of_group(QString)));
+    }
 }
 
+void MainPage::set_name_of_group(QString nameofgroup)
+{
+
+    list_order_type_name[2] += nameofgroup;
+    emit create_chatroom(list_order_type_name[0],list_order_type_name[1],list_order_type_name[2]);
+}
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -88,8 +141,9 @@ void MainPage::selectcontact(QString name)
 
 void MainPage::on_sendButton_clicked()
 {
-
-    emit send_massage("send-massage",ui->textmassageEdit->text(),chatroom_name);
+    //ui->chatlistofownWidget->addItem(ui->textmassageEdit->text());
+    emit send_massage("send_massage",ui->textmassageEdit->text(),chatroom_name);
+    ui->textmassageEdit->clear();
 }
 
 

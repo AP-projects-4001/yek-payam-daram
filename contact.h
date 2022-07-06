@@ -15,14 +15,14 @@ class Contact : public QDialog
 public:
     explicit Contact(QWidget *parent = nullptr);
     ~Contact();
-    QListWidgetItem* contact;
-
+    QString contact;
+    QString type_chatroom;
 private:
     Ui::Contact *ui;
 
 public slots:
     //show contact fo private chat
-    void show_contact(std::vector<Account*> Accounts_contact);
+    void show_contact(QString typechat, std::vector<Account*> Accounts_contact);
     //select contact fo private chat
     void contact_select(QListWidgetItem* item);
 private slots:
@@ -30,6 +30,7 @@ private slots:
 
 signals:
     void select_contact(QString);
+
 
 };
 

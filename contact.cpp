@@ -1,7 +1,7 @@
 #include "contact.h"
 #include "ui_contact.h"
 
-Contact::Contact(QWidget *parent) :
+Contact::Contact( QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Contact)
 {
@@ -14,8 +14,10 @@ Contact::~Contact()
     delete ui;
 }
 
-void Contact::show_contact(std::vector<Account*> Accounts_contact)
+void Contact::show_contact(QString typechat,std::vector<Account*> Accounts_contact)
 {
+    type_chatroom = typechat;
+    ui->ContantslistWidget->clear();
     for (int i = 0; i < (int)Accounts_contact.size() ; i++) {
         ui->ContantslistWidget->addItem(Accounts_contact[i]->get_user_name());
 
@@ -25,13 +27,18 @@ void Contact::show_contact(std::vector<Account*> Accounts_contact)
 
 void Contact::contact_select(QListWidgetItem* item)
 {
-    contact = item;
+    if (type_chatroom == "private")
+        contact = item->text();
+    else
+    {
+        contact = contact + item->text() + ",";
+    }
 }
 
 
 
 void Contact::on_buttonBox_accepted()
 {
-    emit select_contact(contact->text());
+    emit select_contact(contact);
 }
 

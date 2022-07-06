@@ -14,7 +14,7 @@ class MainPage : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainPage(std::vector<Account*>& contacts,QWidget *parent = nullptr);
+    explicit MainPage(std::vector<Account*>& contacts, QString username, QWidget *parent = nullptr);
     ~MainPage();
 
 private:
@@ -30,6 +30,9 @@ public slots:
     void on_sendButton_clicked();
 
     void onListChatroomItemClicked(QListWidgetItem* item);
+
+    void update_massages_ui(QStringList list_massage);
+
 signals:
     void create_chatroom(QString,QString,QString);
 
@@ -42,11 +45,17 @@ signals:
 private slots:
     void on_AddChatroomButton_clicked();
     void addchatroom(QString type_chat);
-    void selectcontact(QString name);
+    void selectcontact(QString name); 
+    void set_name_of_group(QString nameofgroup);
 
 public:
     std::vector<Account*> Accounts_main;
+    ///chatroom witch selected for recive massages
     QString chatroom_name;
+
+    QStringList massage_list;
+
+    QString current_user;
 };
 
 #endif // MAINPAGE_H

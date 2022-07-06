@@ -19,6 +19,7 @@ SOURCES += \
     main.cpp \
     mainpage.cpp \
     mainwindow.cpp \
+    nameofgroup.cpp \
     sign_in.cpp \
     timekhodam.cpp \
     typechatwin.cpp
@@ -31,6 +32,7 @@ HEADERS += \
     log_in.h \
     mainpage.h \
     mainwindow.h \
+    nameofgroup.h \
     sign_in.h \
     timekhodam.h \
     typechatwin.h
@@ -40,6 +42,7 @@ FORMS += \
     log_in.ui \
     mainpage.ui \
     mainwindow.ui \
+    nameofgroup.ui \
     sign_in.ui \
     typechatwin.ui
 

@@ -13,9 +13,10 @@ public:
     Massage();
 private:
     QString text;
-    Date massage_date;
-    TimeKhodam massage_time;
+//    Date massage_date;
+//    TimeKhodam massage_time;
     QString sender;
+
 
 
 };
