@@ -194,9 +194,22 @@ void MyThread::create_chatRoom(std::vector<std::string> infos)
     }
 }
 
-void MyThread::show_chatRooms(std::vector<std::string> infos)
+void MyThread::show_chatRooms()
 {
-
+    std::string res;
+    for(unsigned long int i = 0; i < chats.size(); i++){
+        if(chats[i]->getType() == "Private"){
+            res += chats[i]->getName(accounts[acc_index].get_user_name().toStdString());
+            if(i < chats.size() - 1)
+                res += ',';
+        }
+        else{
+            res += chats[i]->getName();
+            if(i < chats.size() - 1)
+                res += ',';
+        }
+    }
+    sendInfo(res);
 }
 
 std::string MyThread::getInfo()

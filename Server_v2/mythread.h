@@ -31,8 +31,10 @@ public slots:
 
 private:
     void create_chatRoom(std::vector<std::string> infos);
-    void show_chatRooms(std::vector<std::string> infos);
+    void show_chatRooms();
+    void select_chatRoom();
     std::string getInfo();
+    void sendInfo(std::string);
     std::vector<std::string> split(std::string str,char separator);
     QTcpSocket *socket;
     qintptr socketDescriptor;
