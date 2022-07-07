@@ -129,7 +129,10 @@ void MyThread::login(QString user, QString pass)
             if(pass == accounts[i].get_password())
             {
               qDebug() << "log in secessfuly ";
-              socket->write("log in secessfuly");
+              QString secess = "log in secessfuly";
+              socket->write((secess+'\n').toUtf8());
+              socket->flush();
+              socket->waitForBytesWritten(30000);
               socket->waitForBytesWritten(-1);
               flag = 1;
               acc_index = i;
@@ -138,7 +141,7 @@ void MyThread::login(QString user, QString pass)
             else
             {
                 qDebug() << "your pass is wrong ";
-                socket->write("your pass is wrong!!!");
+                socket->write("your username or password is wrong!!!");
                 socket->waitForBytesWritten(-1);
                 flag = 1;
             }
@@ -147,15 +150,13 @@ void MyThread::login(QString user, QString pass)
     if(flag == 0)
     {
         qDebug() << "your username is wrong";
-        socket->write("your username is wrong");
+        socket->write("your username or password is wrong!!!");
         socket->waitForBytesWritten(-1);
     }
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//file handling
 
 
 void MyThread::myAccount()
@@ -177,11 +178,33 @@ void MyThread::myAccount()
         else if(infos[0] == "select_chatroom"){
             select_chatRoom(infos[1]);
         }
-        else if(infos[0] == "disconnected"){
+        else if (infos[0] == "setting")//setting
+        {
+            accounts[acc_index].set_user_name(QString::fromStdString(infos[1]));
+            accounts[acc_index].set_email(QString::fromStdString(infos[2]));
+            accounts[acc_index].set_number(QString::fromStdString(infos[3]));
+            qDebug() << "changing complit";
+        }
+        else if (infos[0] == "profile") {
+            for (int i = 0; i < (int)accounts.size(); i++)
+            {
+                if(infos[1] == accounts[i].get_user_name().toStdString())
+                {
+                    socket->write(accounts[i].get_user_name().toUtf8());
+                    socket->write(",");
+                    socket->write(accounts[i].get_email().toUtf8());
+                    socket->write(",");
+                    socket->write(accounts[i].get_number().toUtf8());
+                    socket->waitForBytesWritten(-1);
+                }
+            }
+        }
+        else if (infos[0] == "exit") {
             break;
         }
-        else if(infos[0] == "settings"){
-
+        else
+        {
+            qDebug() << QString::fromStdString(infos[0]);
         }
     }
 }
@@ -218,7 +241,7 @@ void MyThread::create_chatRoom(std::vector<std::string> infos)
                 chat->setAccount(accounts[i].get_user_name().toStdString());
                 chat->setAccount(accounts[acc_index].get_user_name().toStdString());
                 chats.push_back(chat);
-                sendInfo();
+                //sendInfo("done");
                 return;
             }
         }
@@ -275,6 +298,7 @@ std::string MyThread::getInfo()
     QByteArray info;
     while(socket->waitForReadyRead(-1)){
         info = socket->readAll();
+        qDebug() << socketDescriptor << " Data in: " << info;
         break;
     }
     std::string str_info = info.toStdString();
