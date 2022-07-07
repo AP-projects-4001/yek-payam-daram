@@ -174,7 +174,7 @@ void MainWindow::login_acc(QString user_inp, QString pass)
 void MainWindow::myAccount(QString curent_user)
 {
     //this->hide();
-    clientsocket->write("ok");
+//    clientsocket->write("ok");
     clientsocket->waitForBytesWritten(-1);
 
     updata_clinet_vector();

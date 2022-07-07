@@ -197,18 +197,7 @@ void MyThread::myAccount()
             qDebug() << "changing complit";
         }
         else if (infos[0] == "profile") {
-            for (int i = 0; i < (int)accounts.size(); i++)
-            {
-                if(infos[1] == accounts[i].get_user_name().toStdString())
-                {
-                    socket->write(accounts[i].get_user_name().toUtf8());
-                    socket->write(",");
-                    socket->write(accounts[i].get_email().toUtf8());
-                    socket->write(",");
-                    socket->write(accounts[i].get_number().toUtf8());
-                    socket->waitForBytesWritten(-1);
-                }
-            }
+            profile(infos[1]);
         }
         else if (infos[0] == "exit") {
             break;
