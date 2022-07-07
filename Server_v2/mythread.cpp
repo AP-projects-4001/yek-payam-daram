@@ -177,6 +177,12 @@ void MyThread::myAccount()
         else if(infos[0] == "select_chatroom"){
             select_chatRoom(infos[1]);
         }
+        else if(infos[0] == "disconnected"){
+            break;
+        }
+        else if(infos[0] == "settings"){
+
+        }
     }
 }
 
@@ -195,6 +201,14 @@ int MyThread::find_room(std::string roomName)
     return -1;      //there is no Chat
 }
 
+void MyThread::settings(std::string user, std::string mail, std::string number)
+{
+    accounts[acc_index].set_user_name(QString::fromStdString(user));
+    accounts[acc_index].set_email(QString::fromStdString(mail));
+    accounts[acc_index].set_number(QString::fromStdString(number));
+    sendInfo();
+}
+
 void MyThread::create_chatRoom(std::vector<std::string> infos)
 {
     if(infos[1] == "private"){
@@ -204,7 +218,7 @@ void MyThread::create_chatRoom(std::vector<std::string> infos)
                 chat->setAccount(accounts[i].get_user_name().toStdString());
                 chat->setAccount(accounts[acc_index].get_user_name().toStdString());
                 chats.push_back(chat);
-                sendInfo("done");
+                sendInfo();
                 return;
             }
         }
@@ -272,6 +286,12 @@ void MyThread::sendInfo(std::string str)
 {
     QByteArray res (str.c_str(),str.length());
     socket->write(res);
+    socket->waitForBytesWritten(-1);
+}
+
+void MyThread::sendInfo()
+{
+    socket->write("done");
     socket->waitForBytesWritten(-1);
 }
 

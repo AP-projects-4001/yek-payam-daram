@@ -32,11 +32,13 @@ public slots:
 
 private:
     int find_room(std::string roomName);
+    void settings(std::string user,std::string mail, std::string number);
     void create_chatRoom(std::vector<std::string> infos);
     void show_chatRooms();
     void select_chatRoom(std::string roomName);
     std::string getInfo();
     void sendInfo(std::string);
+    void sendInfo();
     std::vector<std::string> split(std::string str,char separator);
     QTcpSocket *socket;
     qintptr socketDescriptor;
