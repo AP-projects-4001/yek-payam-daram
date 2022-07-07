@@ -37,13 +37,14 @@ void MyServer::incomingConnection(qintptr socketDescriptor)
     qDebug() << socketDescriptor << " Connecting...";
 
     // Every new connection will be run in a newly created thread
-    MyThread *thread = new MyThread(Accounts,socketDescriptor, this);
-    saving_data();
+    MyThread *thread = new MyThread(Accounts,ChatRooms,socketDescriptor, this);
+    //saving_data();
     // connect signal/slot
     // once a thread is not needed, it will be beleted later
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
     thread->start();
+    saving_data();
 }
 
 
@@ -103,5 +104,40 @@ void MyServer::loading_data()
             qDebug() << Accounts[i]->get_user_name();
             qDebug() << Accounts[i]->get_email();
         }
+
+}
+
+void MyServer::saving_chatrooms()
+{
+//    qDebug() << "saving chatroom ... ";
+//    QFile ofile{"C:/cpp files/project/chatroom.json"};
+//    ofile.open(QIODevice::WriteOnly);
+//    QJsonObject j;
+//    QJsonArray b;
+//    for (int i = 0; i<(int)ChatRooms.size() ;i++ )
+//    {
+//        QJsonObject people;
+////        people["User"] = Accounts[i]->get_user_name();
+////        people["Email"] = Accounts[i]->get_email();
+////        people["Number"] = Accounts[i]->get_number();
+////        people["Pass"] = Accounts[i]->get_password();
+////        people["year"] = Accounts[i]->get_yDate();
+////        people["month"] = Accounts[i]->get_mDate();
+////        people["day"] = Accounts[i]->get_dDate();
+//        people["chats"];
+//        for ( int j = 0; j < ChatRooms[i])
+//        b.append(people);
+
+//    }
+//    j["accounts"] = b;
+//    QJsonDocument d(j);
+
+//    ofile.write(d.toJson());
+//    ofile.flush();
+//    ofile.close();
+}
+
+void MyServer::loading_chatroom()
+{
 
 }

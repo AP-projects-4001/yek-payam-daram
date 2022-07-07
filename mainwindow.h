@@ -48,11 +48,17 @@ private slots:
 
     void select_chat(QString chatroomname);
 
+    void change_info(QString order ,QString user ,QString email ,QString number);
+
+    void profile_info(QString order_p,QString user_p);
+
+    //updates
     void updata_clinet_vector();
 
     void update_chatroomlist();
 
     void update_selected_chatroom();
+
 private:
     Ui::MainWindow *ui;
     std::vector<Account*> Accounts;

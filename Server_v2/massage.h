@@ -11,14 +11,20 @@ class Massage
 {
 public:
     Massage();
+
 private:
     QString text;
-//    Date massage_date;
-//    TimeKhodam massage_time;
     QString sender;
 
+    Date massage_date;
+    TimeKhodam massage_time;
 
+public:
+    QString get_text();
+    void set_text(QString text_inp);
 
+    QString get_sender();
+    void set_sender(QString sender_inp);
 };
 
 #endif // MASSAGE_H

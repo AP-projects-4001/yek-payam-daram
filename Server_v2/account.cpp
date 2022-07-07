@@ -1,5 +1,6 @@
 #include "account.h"
 #include <string>
+#include "chatroom.h"
 
 Account::Account()
 {

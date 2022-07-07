@@ -12,7 +12,9 @@ CONFIG += c++11
 
 SOURCES += \
     account.cpp \
+    chatroom.cpp \
     main.cpp \
+    massage.cpp \
     myserver.cpp \
     mythread.cpp \
     date.cpp \
@@ -21,6 +23,8 @@ SOURCES += \
 
 HEADERS += \
     account.h \
+    chatroom.h \
+    massage.h \
     myserver.h \
     mythread.h \
     date.h \

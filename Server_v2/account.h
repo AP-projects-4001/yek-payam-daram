@@ -5,7 +5,8 @@
 
 #include <vector>
 #include "date.h"
-#include "chatroom.h"
+
+class Chatroom;
 
 class Account
 {
@@ -15,9 +16,6 @@ private:
     QString password;
     QString email;
     Date birthday;
-
-    //std::vector<Chatroom*> chatrooms;
-
     int ID_NUM;
 
 public:
@@ -35,9 +33,11 @@ public:
     int get_mDate();
     int get_dDate();
     int get_ID_NUM();
+
 public:
     static int idgenerator;
     std::vector<QString> frend;
+    std::vector<Chatroom*> chatrooms;
 };
 
 #endif // ACCOUNT_H

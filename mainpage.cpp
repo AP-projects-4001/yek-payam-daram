@@ -7,6 +7,7 @@
 #include <contact.h>
 #include "nameofgroup.h"
 
+
 MainPage::MainPage(std::vector<Account*>& contacts, QString username, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainPage)
@@ -74,18 +75,18 @@ void MainPage::onListChatroomItemClicked(QListWidgetItem *item)
                         ui->chatlistofownWidget->addItem("");
                         ui->chatlistofownWidget->addItem("");
                     }
-                }//ali,salam,asghar,salam,ali,cheto
+                }
                 /////////////////
-                //loading chat here ...
-                /////////////////
+
             }
         }
     }
+    ui->profileLinkButton->setText(chatroom_name);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-///add chattoom functions
+//add chattoom functions
 
 void MainPage::on_AddChatroomButton_clicked()
 {
@@ -147,4 +148,83 @@ void MainPage::on_sendButton_clicked()
 }
 
 
+///////////////////////////////////////////////////////////////////////////
+//persnoal setting
 
+void MainPage::on_settingButton_clicked()
+{
+    d = new UserSettings(this);
+    d->show();
+    for(int i = 0; (int)Accounts_main.size()-1; i++)
+    {
+        if (Accounts_main[i]->get_user_name() == current_user)
+        {
+            d->show_info(Accounts_main[i]->get_user_name(), Accounts_main[i]->get_email(), Accounts_main[i]->get_number());
+            break;
+        }
+    }
+    connect(d,SIGNAL(send_change_info(QString,QString,QString)), this, SLOT(update_acc_vector(QString,QString,QString)));
+}
+
+void MainPage::update_acc_vector(QString usr, QString email, QString num)
+{
+    delete d;
+    for (int i = 0; i < (int)Accounts_main.size() ; i++ )
+    {
+        if (Accounts_main[i]->get_user_name()== current_user)
+        {
+            Accounts_main[i]->set_user_name(usr);
+            Accounts_main[i]->set_email(email);
+            Accounts_main[i]->set_number(num);
+            break;
+        }
+
+    }
+    emit send_change_toserver("setting", usr, email, num);
+}
+
+////////////////////////////////////////////////////////////////////////////
+//show profile of chatroom
+
+void MainPage::on_profileLinkButton_clicked()
+{
+    QString order = "profile";
+//    QStringList name = chatroom_name.split(":");
+
+//    if(name[0] == current_user)
+//    {
+//        emit send_profile_info(order, name[1]);
+//    }
+//    else
+//    {
+//        emit send_profile_info(order, name[0]);
+//    }
+    emit send_profile_info(order, chatroom_name);
+
+}
+
+
+void MainPage::show_profile(QString data)
+{
+    QStringList list_info = data.split(",");
+
+
+
+    if(list_info[0] == "private")
+    {
+        Profile* pro_window = new Profile(this);
+        pro_window->show();
+        pro_window->show_profile("private",list_info[1], list_info[2], list_info[3]);
+    }
+    else
+    {
+        Group_pro* profile = new Group_pro(this);
+        profile->show();
+        profile->set_subject(list_info[1]);
+        for (int i = 2; i < list_info.length() ; i++ ) {
+            profile->show_group_members(list_info[i]);
+        }
+    }
+
+
+}

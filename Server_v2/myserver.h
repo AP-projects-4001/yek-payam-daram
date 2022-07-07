@@ -27,6 +27,6 @@ protected:
 
 public:
     std::vector<Account*> Accounts;
-
+    std::vector<Chatroom*> ChatRooms;
 };
 #endif // MYSERVER_H

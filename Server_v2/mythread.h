@@ -13,7 +13,7 @@ class MyThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit MyThread(std::vector<Account*>& Accounts,qintptr ID ,QObject *parent = 0);
+    explicit MyThread(std::vector<Account*>& Accounts,std::vector<Chatroom*>& chatrooms,qintptr ID ,QObject *parent = 0);
 
     void run();
 
@@ -27,15 +27,20 @@ public slots:
        void signin(QString user, QString email, QString num, QString pass, int year, int month, int day);
        void login(QString user, QString pass);
 
-       void account_run(int ID_num_inp);
+//////////////////////////////////////////
+       void account_run();
        void updata_clinet_vector();
+       void readingdata();
 
 private:
     QTcpSocket *socket;
     qintptr socketDescriptor;
-private:
+
+public:
     Account* new_acc;
     std::vector<Account*> accounts;
+    Account* login_acc;
+    std::vector<Chatroom*>& chatrooms_th;
 };
 
 #endif // MYTHREAD_H
