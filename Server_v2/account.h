@@ -17,10 +17,10 @@ private:
     QString password;
     QString email;
     Date birthday;
-    std::vector <Account> frend;
     std::vector <ChatRoom_abs*> chatRooms;  // Need to be fixed
 public:
     Account();
+    std::vector <Account> frend;
     void set_number(QString numberinp);
     QString get_number();
     void set_user_name(QString user_name_inp);

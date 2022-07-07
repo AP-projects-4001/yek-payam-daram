@@ -193,8 +193,8 @@ void MyThread::create_chatRoom(std::vector<std::string> infos)
         for(unsigned long int i = 0; i < accounts.size(); i++){
             if(accounts[i].get_user_name().toStdString() == infos[2]){
                 ChatRoom_abs* chat = new Private_chat;
-                chat->setAccount(accounts[i]);
-                chat->setAccount(accounts[acc_index]);
+                chat->setAccount(accounts[i].get_user_name().toStdString());
+                chat->setAccount(accounts[acc_index].get_user_name().toStdString());
                 chats.push_back(chat);
                 return;
             }
@@ -250,6 +250,11 @@ std::string MyThread::getInfo()
     std::string str_info = info.toStdString();
 
     return str_info;
+}
+
+void MyThread::sendInfo(std::string)
+{
+
 }
 
 std::vector<std::string> MyThread::split(std::string str, char separator)

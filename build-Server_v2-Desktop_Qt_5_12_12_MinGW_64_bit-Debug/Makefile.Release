@@ -257,6 +257,7 @@ release/moc_myserver.cpp: ../Server_v2/myserver.h \
 		../Server_v2/chatroom_abs.h \
 		../Server_v2/message.h \
 		../Server_v2/private_chat.h \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/QFile \
 		release/moc_predefs.h \
 		C:/Code/Qt/5.12.12/mingw73_64/bin/moc.exe
 	C:\Code\Qt\5.12.12\mingw73_64\bin\moc.exe $(DEFINES) --include "C:/Code/Projects/Ap/New folder/yek-payam-daram/build-Server_v2-Desktop_Qt_5_12_12_MinGW_64_bit-Debug/release/moc_predefs.h" -IC:/Code/Qt/5.12.12/mingw73_64/mkspecs/win32-g++ -I"C:/Code/Projects/Ap/New folder/yek-payam-daram/Server_v2" -IC:/Code/Qt/5.12.12/mingw73_64/include -IC:/Code/Qt/5.12.12/mingw73_64/include/QtWidgets -IC:/Code/Qt/5.12.12/mingw73_64/include/QtGui -IC:/Code/Qt/5.12.12/mingw73_64/include/QtANGLE -IC:/Code/Qt/5.12.12/mingw73_64/include/QtNetwork -IC:/Code/Qt/5.12.12/mingw73_64/include/QtCore -I. -IC:/Code/Qt/Tools/mingw730_64/lib/gcc/x86_64-w64-mingw32/7.3.0/include/c++ -IC:/Code/Qt/Tools/mingw730_64/lib/gcc/x86_64-w64-mingw32/7.3.0/include/c++/x86_64-w64-mingw32 -IC:/Code/Qt/Tools/mingw730_64/lib/gcc/x86_64-w64-mingw32/7.3.0/include/c++/backward -IC:/Code/Qt/Tools/mingw730_64/lib/gcc/x86_64-w64-mingw32/7.3.0/include -IC:/Code/Qt/Tools/mingw730_64/lib/gcc/x86_64-w64-mingw32/7.3.0/include-fixed -IC:/Code/Qt/Tools/mingw730_64/x86_64-w64-mingw32/include ..\Server_v2\myserver.h -o release\moc_myserver.cpp
@@ -642,6 +643,7 @@ release/main.o: ../Server_v2/main.cpp ../Server_v2/myserver.h \
 		../Server_v2/chatroom_abs.h \
 		../Server_v2/message.h \
 		../Server_v2/private_chat.h \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/QFile \
 		C:/Code/Qt/5.12.12/mingw73_64/include/QtWidgets/QApplication \
 		C:/Code/Qt/5.12.12/mingw73_64/include/QtWidgets/qapplication.h \
 		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qcoreapplication.h \
@@ -651,116 +653,7 @@ release/main.o: ../Server_v2/main.cpp ../Server_v2/myserver.h \
 		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qinputmethod.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o ..\Server_v2\main.cpp
 
-release/message.o: ../Server_v2/message.cpp ../Server_v2/message.h \
-		../Server_v2/account.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtWidgets/QMainWindow \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtWidgets/qmainwindow.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtWidgets/qtwidgetsglobal.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qtguiglobal.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qglobal.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qconfig-bootstrapped.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qconfig.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qtcore-config.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qsystemdetection.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qprocessordetection.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qcompilerdetection.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qtypeinfo.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qsysinfo.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qlogging.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qflags.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qatomic.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qbasicatomic.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qatomic_bootstrap.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qgenericatomic.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qatomic_cxx11.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qatomic_msvc.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qglobalstatic.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qmutex.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qnumeric.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qversiontagging.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qtgui-config.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtWidgets/qtwidgets-config.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtWidgets/qwidget.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qwindowdefs.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qobjectdefs.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qnamespace.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qobjectdefs_impl.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qwindowdefs_win.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qobject.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qstring.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qchar.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qbytearray.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qrefcount.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qarraydata.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qstringliteral.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qstringalgorithms.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qstringview.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qstringbuilder.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qlist.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qalgorithms.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qiterator.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qhashfunctions.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qpair.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qbytearraylist.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qstringlist.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qregexp.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qstringmatcher.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qcoreevent.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qscopedpointer.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qmetatype.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qvarlengtharray.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qcontainerfwd.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qobject_impl.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qmargins.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qpaintdevice.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qrect.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qsize.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qpoint.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qpalette.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qcolor.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qrgb.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qrgba64.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qbrush.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qvector.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qmatrix.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qpolygon.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qregion.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qdatastream.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qiodevice.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qline.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qtransform.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qpainterpath.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qimage.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qpixelformat.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qpixmap.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qsharedpointer.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qshareddata.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qhash.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qsharedpointer_impl.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qfont.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qfontmetrics.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qfontinfo.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtWidgets/qsizepolicy.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qcursor.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qkeysequence.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qevent.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qvariant.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qmap.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qdebug.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qtextstream.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qlocale.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qset.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qcontiguouscache.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qurl.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qurlquery.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qfile.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qfiledevice.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qvector2d.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qtouchdevice.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtWidgets/qtabwidget.h \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtGui/qicon.h \
-		../Server_v2/date.h \
-		../Server_v2/chatroom_abs.h
+release/message.o: ../Server_v2/message.cpp ../Server_v2/message.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\message.o ..\Server_v2\message.cpp
 
 release/myserver.o: ../Server_v2/myserver.cpp ../Server_v2/myserver.h \
@@ -881,6 +774,7 @@ release/myserver.o: ../Server_v2/myserver.cpp ../Server_v2/myserver.h \
 		../Server_v2/chatroom_abs.h \
 		../Server_v2/message.h \
 		../Server_v2/private_chat.h \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/QFile \
 		ui_myserver.h \
 		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/QVariant \
 		C:/Code/Qt/5.12.12/mingw73_64/include/QtWidgets/QApplication \
@@ -903,7 +797,16 @@ release/myserver.o: ../Server_v2/myserver.cpp ../Server_v2/myserver.h \
 		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qthread.h \
 		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/QObject \
 		C:/Code/Qt/5.12.12/mingw73_64/include/QtNetwork/QTcpSocket \
-		C:/Code/Qt/5.12.12/mingw73_64/include/QtNetwork/qtcpsocket.h
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtNetwork/qtcpsocket.h \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/QTextStream \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/QJsonObject \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qjsonobject.h \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qjsonvalue.h \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/QJsonDocument \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qjsondocument.h \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/QJsonArray \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/qjsonarray.h \
+		C:/Code/Qt/5.12.12/mingw73_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\myserver.o ..\Server_v2\myserver.cpp
 
 release/mythread.o: ../Server_v2/mythread.cpp ../Server_v2/mythread.h \

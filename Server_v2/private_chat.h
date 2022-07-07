@@ -8,9 +8,8 @@ class Private_chat : public ChatRoom_abs
 
 public:
     Private_chat();
-    void sendMessage(std::string txt,std::string user_name) override;
+//    void sendMessage(std::string txt,std::string user_name) override;
     std::vector<Account> getAccounts();
-    void setAccount(Account acc) override;
     std::string getType() override {return "Private";};
     std::string getName(std::string name) override;
     std::string getName()override {};
