@@ -15,6 +15,7 @@ SOURCES += \
     contact.cpp \
     date.cpp \
     datetime.cpp \
+    group_pro.cpp \
     log_in.cpp \
     main.cpp \
     mainpage.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     contact.h \
     date.h \
     datetime.h \
+    group_pro.h \
     log_in.h \
     mainpage.h \
     mainwindow.h \
@@ -43,6 +45,7 @@ HEADERS += \
 
 FORMS += \
     contact.ui \
+    group_pro.ui \
     log_in.ui \
     mainpage.ui \
     mainwindow.ui \

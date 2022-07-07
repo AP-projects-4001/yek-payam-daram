@@ -6,6 +6,7 @@
 #include <account.h>
 #include "usersettings.h"
 #include "profile.h"
+#include "group_pro.h"
 
 namespace Ui {
 class MainPage;

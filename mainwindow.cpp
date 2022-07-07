@@ -174,6 +174,8 @@ void MainWindow::login_acc(QString user_inp, QString pass)
 void MainWindow::myAccount(QString curent_user)
 {
     //this->hide();
+    clientsocket->write("ok");
+    clientsocket->waitForBytesWritten(-1);
 
     updata_clinet_vector();
 
@@ -189,12 +191,11 @@ void MainWindow::myAccount(QString curent_user)
 
     mainpagewindow->load_chatrooms(chatrooms_name);
 
-    connect(mainpagewindow, SIGNAL(send_profile_info(QString,QString)), this, SLOT(profile_info(QStrnig,QString)));
     connect(mainpagewindow, SIGNAL(create_chatroom(QString,QString,QString)),this, SLOT(createchat(QString,QString,QString)));
     connect(mainpagewindow, SIGNAL(send_massage(QString,QString,QString)),this,SLOT(send_massage(QString,QString,QString)));
     connect(mainpagewindow, SIGNAL(select_chatroom(QString)),this, SLOT(select_chat(QString)));
     connect(mainpagewindow, SIGNAL(send_change_toserver(QString,QString,QString,QString)), this , SLOT(change_info(QString,QString,QString,QString)));
-
+    connect(mainpagewindow, SIGNAL(send_profile_info(QString, QString)), this , SLOT(profile_info(QString,QString)));
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -283,6 +284,7 @@ void MainWindow::profile_info(QString order_p,QString user_p)
     while(clientsocket->waitForReadyRead(-1))
     {
          data = clientsocket->readAll();
+         break;
     }
     mainpagewindow->show_profile((QString)data);
 }

@@ -75,18 +75,18 @@ void MainPage::onListChatroomItemClicked(QListWidgetItem *item)
                         ui->chatlistofownWidget->addItem("");
                         ui->chatlistofownWidget->addItem("");
                     }
-                }//ali,salam,asghar,salam,ali,cheto
+                }
                 /////////////////
-                //loading chat here ...
-                /////////////////
+
             }
         }
     }
+    ui->profileLinkButton->setText(chatroom_name);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-///add chattoom functions
+//add chattoom functions
 
 void MainPage::on_AddChatroomButton_clicked()
 {
@@ -149,7 +149,7 @@ void MainPage::on_sendButton_clicked()
 
 
 ///////////////////////////////////////////////////////////////////////////
-///persnoal setting
+//persnoal setting
 
 void MainPage::on_settingButton_clicked()
 {
@@ -184,7 +184,7 @@ void MainPage::update_acc_vector(QString usr, QString email, QString num)
 }
 
 ////////////////////////////////////////////////////////////////////////////
-//show profile
+//show profile of chatroom
 
 void MainPage::on_profileLinkButton_clicked()
 {
@@ -201,7 +201,6 @@ void MainPage::on_profileLinkButton_clicked()
 //    }
     emit send_profile_info(order, chatroom_name);
 
-
 }
 
 
@@ -209,8 +208,23 @@ void MainPage::show_profile(QString data)
 {
     QStringList list_info = data.split(",");
 
-    Profile* pro_window = new Profile(this);
-    pro_window->show();
 
-    pro_window->show_profile(list_info[0], list_info[1], list_info[2]);
+
+    if(list_info[0] == "private")
+    {
+        Profile* pro_window = new Profile(this);
+        pro_window->show();
+        pro_window->show_profile("private",list_info[1], list_info[2], list_info[3]);
+    }
+    else
+    {
+        Group_pro* profile = new Group_pro(this);
+        profile->show();
+        profile->set_subject(list_info[1]);
+        for (int i = 2; i < list_info.length() ; i++ ) {
+            profile->show_group_members(list_info[i]);
+        }
+    }
+
+
 }
