@@ -189,16 +189,18 @@ void MainPage::update_acc_vector(QString usr, QString email, QString num)
 void MainPage::on_profileLinkButton_clicked()
 {
     QString order = "profile";
-    QStringList name = chatroom_name.split(":");
+//    QStringList name = chatroom_name.split(":");
 
-    if(name[0] == current_user)
-    {
-        emit send_profile_info(order, name[1]);
-    }
-    else
-    {
-        emit send_profile_info(order, name[0]);
-    }
+//    if(name[0] == current_user)
+//    {
+//        emit send_profile_info(order, name[1]);
+//    }
+//    else
+//    {
+//        emit send_profile_info(order, name[0]);
+//    }
+    emit send_profile_info(order, chatroom_name);
+
 
 }
 

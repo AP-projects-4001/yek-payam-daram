@@ -8,6 +8,7 @@ public:
     GroupChat();
     void setName(std::string namein) override;
     std::string getName() override;
+    std::string getType() override{return "group";}
 };
 
 #endif // GROUPCHAT_H

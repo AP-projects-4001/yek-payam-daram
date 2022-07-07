@@ -8,6 +8,7 @@
 #include <QJsonArray>
 #include <string>
 #include <QDebug>
+#include "groupchat.h"
 
 MyThread::MyThread(qintptr ID , std::vector<Account>& accs, std::vector<ChatRoom_abs*>& chats ,QObject *parent ) :
     QThread(parent) ,accounts(accs),chats(chats)
@@ -224,6 +225,14 @@ int MyThread::find_room(std::string roomName)
     return -1;      //there is no Chat
 }
 
+int MyThread::find_acc(std::string acc_name)
+{
+    for(unsigned long int i = 0; i < chats.size(); i++){
+        if(accounts[i].get_user_name().toStdString() == acc_name)
+            return i;
+    }
+}
+
 void MyThread::settings(std::string user, std::string mail, std::string number)
 {
     accounts[acc_index].set_user_name(QString::fromStdString(user));
@@ -248,7 +257,14 @@ void MyThread::create_chatRoom(std::vector<std::string> infos)
         //if username is invalid???
     }
     else if(infos[1] == "group"){
-
+        ChatRoom_abs* chat = new GroupChat;
+        for( unsigned long i = 2; i < infos.size() - 1; i++){
+            chat->setAccount(accounts[find_acc(infos[i])].get_user_name().toStdString());
+        }
+        chat->setAccount(accounts[acc_index].get_user_name().toStdString());
+        chat->setName(infos[infos.size()-1]);
+        chats.push_back(chat);
+        return;
     }
     else {
 
