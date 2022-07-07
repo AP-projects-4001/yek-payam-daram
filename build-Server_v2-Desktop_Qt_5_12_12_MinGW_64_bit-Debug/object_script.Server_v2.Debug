@@ -1,4 +1,5 @@
 debug/account.o
+debug/groupchat.o
 debug/main.o
 debug/message.o
 debug/myserver.o

@@ -160,14 +160,22 @@ void MyThread::login(QString user, QString pass)
 
 void MyThread::myAccount()
 {
+    updata_clinet_vector();
     while (true) {
         std::string info = getInfo();
         std::vector<std::string> infos = split(info,',');
-        if(infos[0] == "create_chatRoom"){         //case 1 (adding a chat_room)
+        if(infos[0] == "create_chatroom"){         //case 1 (adding a chat_room)
             create_chatRoom(infos);
         }
-        else if (infos[0] == "send_message"){
-
+        else if (infos[0] == "send_massage"){
+            int index = find_room(infos[2]);
+            chats[index]->sendMessage(infos[1],accounts[acc_index].get_user_name().toStdString());
+        }
+        else if(infos[0] == "show chatrooms"){
+            show_chatRooms();
+        }
+        else if(infos[0] == "select_chatroom"){
+            select_chatRoom(infos[1]);
         }
     }
 }
@@ -196,12 +204,13 @@ void MyThread::create_chatRoom(std::vector<std::string> infos)
                 chat->setAccount(accounts[i].get_user_name().toStdString());
                 chat->setAccount(accounts[acc_index].get_user_name().toStdString());
                 chats.push_back(chat);
+                sendInfo("done");
                 return;
             }
         }
         //if username is invalid???
     }
-    else if(infos[0] == "group"){
+    else if(infos[1] == "group"){
 
     }
     else {
@@ -212,6 +221,9 @@ void MyThread::create_chatRoom(std::vector<std::string> infos)
 void MyThread::show_chatRooms()
 {
     std::string res;
+    if (chats.size() == 0){
+        res = "empty";
+    }
     for(unsigned long int i = 0; i < chats.size(); i++){
         if(chats[i]->getType() == "Private"){
             res += chats[i]->getName(accounts[acc_index].get_user_name().toStdString());
@@ -232,6 +244,9 @@ void MyThread::select_chatRoom(std::string roomName)
     int index = find_room(roomName);
     std::string res;
     std::vector<Message> texts = chats[index]->getChats();
+    if(texts.size() == 0){
+        res = "empty";
+    }
     for(unsigned long int i = 0; i < texts.size(); i++){
         res += texts[i].getMessage();
         if(i < texts.size() - 1){
@@ -246,15 +261,18 @@ std::string MyThread::getInfo()
     QByteArray info;
     while(socket->waitForReadyRead(-1)){
         info = socket->readAll();
+        break;
     }
     std::string str_info = info.toStdString();
 
     return str_info;
 }
 
-void MyThread::sendInfo(std::string)
+void MyThread::sendInfo(std::string str)
 {
-
+    QByteArray res (str.c_str(),str.length());
+    socket->write(res);
+    socket->waitForBytesWritten(-1);
 }
 
 std::vector<std::string> MyThread::split(std::string str, char separator)

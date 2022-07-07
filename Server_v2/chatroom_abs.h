@@ -17,11 +17,10 @@ protected:
     std::vector <Message> messages;
     std::vector <std::string> members;
     std::string name;
-    std::string type;
 public:
     ChatRoom_abs(){};
     ~ChatRoom_abs(){};
-    void sendMessage(std::string txt,std::string user_name);
+    virtual void sendMessage(std::string txt,std::string user_name);
     virtual void setName(std::string namein){};
     virtual std::string getName(){};
     virtual std::string getName(std::string acc){};
