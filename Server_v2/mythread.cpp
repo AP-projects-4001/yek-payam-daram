@@ -8,15 +8,13 @@
 #include <QJsonArray>
 #include <string>
 #include <QDebug>
-#include <QByteArray>
 
-MyThread::MyThread(std::vector<Account*>& Accounts,qintptr ID, QObject *parent) :
-    QThread(parent)
+MyThread::MyThread(qintptr ID , std::vector<Account>& accs, std::vector<ChatRoom_abs*>& chats ,QObject *parent ) :
+    QThread(parent) ,accounts(accs),chats(chats)
 {
-    accounts = Accounts;
     this->socketDescriptor = ID;
 
-    //loading_data();
+
 }
 
 void MyThread::run()
@@ -73,17 +71,11 @@ void MyThread::readyRead()
         qDebug() << "sign up";
         signin(list1[1],list1[2],list1[3],list1[4],list1[5].toInt(),list1[6].toInt(),list1[7].toInt());
     }
-    else if (list1[0] == "login")
+    else
     {
         qDebug() << list1[0] << list1[1] << list1[2];
         qDebug() << "log in";
         login(list1[1],list1[2]);
-    }
-    else
-    {
-        socket->write("salam cmd user");
-        socket->flush();
-        socket->waitForBytesWritten(-1);
     }
 
     // will write on server side window
@@ -107,18 +99,24 @@ void MyThread::disconnected()
 
 void MyThread::signin(QString user, QString email, QString num, QString pass, int year, int month, int day)
 {
-    new_acc = new Account;
-    new_acc->set_user_name(user);
-    new_acc->set_email(email);
-    new_acc->set_number(num);
-    new_acc->set_password(pass);
-    new_acc->set_Date_birthday(year, month, day);
+//    new_acc = new Account;
+//    new_acc->set_user_name(user);
+//    new_acc->set_email(email);
+//    new_acc->set_number(num);
+//    new_acc->set_password(pass);
+//    new_acc->set_Date_birthday(year, month, day);
+//    accounts.push_back(new_acc);
+    Account new_acc;
+    new_acc.set_user_name(user);
+    new_acc.set_email(email);
+    new_acc.set_number(num);
+    new_acc.set_password(pass);
+    new_acc.set_Date_birthday(year,month,day);
     accounts.push_back(new_acc);
-    //saving_data();
+
 
 }
 
-////////////////////////////////////////////////////////////////////////////////
 //log in function
 
 void MyThread::login(QString user, QString pass)
@@ -126,27 +124,21 @@ void MyThread::login(QString user, QString pass)
     int flag = 0;
     for (int i = 0; i < (int)accounts.size(); i++)
     {
-        if (user == accounts[i]->get_user_name())
+        if (user == accounts[i].get_user_name())
         {
-            if(pass == accounts[i]->get_password())
+            if(pass == accounts[i].get_password())
             {
               qDebug() << "log in secessfuly ";
-              QString secessfuly_str = "log in secessfuly";
-              QByteArray secessfuly_byte = secessfuly_str.toUtf8();
-              socket->write(secessfuly_byte, secessfuly_byte.size());
-              //socket->flush();
+              socket->write("log in secessfuly");
               socket->waitForBytesWritten(-1);
-
-
               flag = 1;
-              account_run(accounts[i]->get_ID_NUM());
-              break;
+              acc_index = i;
+              myAccount();
             }
             else
             {
                 qDebug() << "your pass is wrong ";
-                QString wrong_str = "your pass is wrong!!!";
-                socket->write(wrong_str.toUtf8(),wrong_str.toUtf8().size());
+                socket->write("your pass is wrong!!!");
                 socket->waitForBytesWritten(-1);
                 flag = 1;
             }
@@ -163,15 +155,135 @@ void MyThread::login(QString user, QString pass)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void MyThread::account_run(int ID_num_inp)
+//file handling
+
+
+void MyThread::myAccount()
 {
-    int selected = ID_num_inp;
     updata_clinet_vector();
-//    socket->write("Welcome ");
-//    qDebug() << socketDescriptor;
-//    QByteArray us = accounts[selected]->get_user_name().toUtf8();
-//    socket->write(us);
-//    socket->waitForBytesWritten(-1);
+    while (true) {
+        std::string info = getInfo();
+        std::vector<std::string> infos = split(info,',');
+        if(infos[0] == "create_chatroom"){         //case 1 (adding a chat_room)
+            create_chatRoom(infos);
+        }
+        else if (infos[0] == "send_massage"){
+            int index = find_room(infos[2]);
+            chats[index]->sendMessage(infos[1],accounts[acc_index].get_user_name().toStdString());
+        }
+        else if(infos[0] == "show chatrooms"){
+            show_chatRooms();
+        }
+        else if(infos[0] == "select_chatroom"){
+            select_chatRoom(infos[1]);
+        }
+    }
+}
+
+int MyThread::find_room(std::string roomName)
+{
+    for(unsigned long int i = 0; i < chats.size(); i++){
+        if(chats[i]->getType() == "Private"){
+           if(roomName ==  chats[i]->getName(accounts[acc_index].get_user_name().toStdString()))
+               return i;
+        }
+        else{
+            if(roomName == chats[i]->getName())
+                return i;
+        }
+    }
+    return -1;      //there is no Chat
+}
+
+void MyThread::create_chatRoom(std::vector<std::string> infos)
+{
+    if(infos[1] == "private"){
+        for(unsigned long int i = 0; i < accounts.size(); i++){
+            if(accounts[i].get_user_name().toStdString() == infos[2]){
+                ChatRoom_abs* chat = new Private_chat;
+                chat->setAccount(accounts[i].get_user_name().toStdString());
+                chat->setAccount(accounts[acc_index].get_user_name().toStdString());
+                chats.push_back(chat);
+                sendInfo("done");
+                return;
+            }
+        }
+        //if username is invalid???
+    }
+    else if(infos[1] == "group"){
+
+    }
+    else {
+
+    }
+}
+
+void MyThread::show_chatRooms()
+{
+    std::string res;
+    if (chats.size() == 0){
+        res = "empty";
+    }
+    for(unsigned long int i = 0; i < chats.size(); i++){
+        if(chats[i]->getType() == "Private"){
+            res += chats[i]->getName(accounts[acc_index].get_user_name().toStdString());
+            if(i < chats.size() - 1)
+                res += ',';
+        }
+        else{
+            res += chats[i]->getName();
+            if(i < chats.size() - 1)
+                res += ',';
+        }
+    }
+    sendInfo(res);
+}
+
+void MyThread::select_chatRoom(std::string roomName)
+{
+    int index = find_room(roomName);
+    std::string res;
+    std::vector<Message> texts = chats[index]->getChats();
+    if(texts.size() == 0){
+        res = "empty";
+    }
+    for(unsigned long int i = 0; i < texts.size(); i++){
+        res += texts[i].getMessage();
+        if(i < texts.size() - 1){
+            res += ',';
+        }
+    }
+    sendInfo(res);
+}
+
+std::string MyThread::getInfo()
+{
+    QByteArray info;
+    while(socket->waitForReadyRead(-1)){
+        info = socket->readAll();
+        break;
+    }
+    std::string str_info = info.toStdString();
+
+    return str_info;
+}
+
+void MyThread::sendInfo(std::string str)
+{
+    QByteArray res (str.c_str(),str.length());
+    socket->write(res);
+    socket->waitForBytesWritten(-1);
+}
+
+std::vector<std::string> MyThread::split(std::string str, char separator)
+{
+    std::vector<std::string>res;
+    std::istringstream string(str);
+    std::string s;
+    while (std::getline(string,s,separator)) {
+        res.push_back(s);
+    }
+    return res;
 }
 
 void MyThread::updata_clinet_vector()
@@ -184,28 +296,26 @@ void MyThread::updata_clinet_vector()
 
     for (int i = 0; i<(int)accounts.size() ;i++ )
     {
-        QByteArray user = accounts[i]->get_user_name().toUtf8();
+        QByteArray user = accounts[i].get_user_name().toUtf8();
         socket->write(user);
         socket->write(",");
-        QByteArray email = accounts[i]->get_email().toUtf8();
+        QByteArray email = accounts[i].get_email().toUtf8();
         socket->write(email);
         socket->write(",");
-        QByteArray number = accounts[i]->get_number().toUtf8();
+        QByteArray number = accounts[i].get_number().toUtf8();
         socket->write(number);
         socket->write(",");
-        QString size_f = QString::number((int)accounts[i]->frend.size());
+        QString size_f = QString::number((int)accounts[i].frend.size());
         QByteArray size_friend = size_f.toUtf8();
         socket->write(size_friend);
 
-        for (int j = 0; j < (int)accounts[i]->frend.size(); j++)
+        for (int j = 0; j < (int)accounts[i].frend.size(); j++)
         {
             socket->write(",");
-            socket->write(accounts[i]->frend[j].toUtf8());
+            socket->write(accounts[i].frend[j].get_user_name().toUtf8());
         }
         socket->write("/");
     }
     socket->waitForBytesWritten(-1);
 }
-
-
 

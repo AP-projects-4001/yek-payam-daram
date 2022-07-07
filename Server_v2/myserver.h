@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QTcpServer>
 #include "account.h"
+#include "private_chat.h"
+#include <QFile>
 #include <vector>
 
 QT_BEGIN_NAMESPACE
@@ -16,17 +18,16 @@ class MyServer : public QTcpServer
 public:
     explicit MyServer(QObject *parent = 0);
     void startServer();
+    void saving_data();
+    void loading_data();
 signals:
 
 public slots:
-    void saving_data();
-    void loading_data();
 
 protected:
     void incomingConnection(qintptr socketDescriptor);
-
-public:
-    std::vector<Account*> Accounts;
-
+private:
+    std::vector<Account> Accounts;
+    std::vector<ChatRoom_abs*> ChatRooms;
 };
 #endif // MYSERVER_H

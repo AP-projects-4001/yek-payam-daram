@@ -12,19 +12,27 @@ CONFIG += c++11
 
 SOURCES += \
     account.cpp \
+    groupchat.cpp \
     main.cpp \
+    message.cpp \
     myserver.cpp \
     mythread.cpp \
     date.cpp \
+    chatroom_abs.cpp \
     datetime.cpp \
+    private_chat.cpp \
     timekhodam.cpp
 
 HEADERS += \
     account.h \
+    chatroom_abs.h \
+    groupchat.h \
+    message.h \
     myserver.h \
     mythread.h \
     date.h \
     datetime.h \
+    private_chat.h \
     timekhodam.h
 
 FORMS += \

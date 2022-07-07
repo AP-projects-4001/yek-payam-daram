@@ -1,5 +1,4 @@
 #include "myserver.h"
-
 #include <QApplication>
 
 #include "account.h"

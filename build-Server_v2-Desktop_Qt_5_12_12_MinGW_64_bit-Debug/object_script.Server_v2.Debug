@@ -1,0 +1,13 @@
+debug/account.o
+debug/groupchat.o
+debug/main.o
+debug/message.o
+debug/myserver.o
+debug/mythread.o
+debug/date.o
+debug/chatroom_abs.o
+debug/datetime.o
+debug/private_chat.o
+debug/timekhodam.o
+debug/moc_myserver.o
+debug/moc_mythread.o
