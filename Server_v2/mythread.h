@@ -32,6 +32,7 @@ public slots:
 
 private:
     int find_room(std::string roomName);
+    void profile(std::string name);
     int find_acc(std::string acc_name);
     void settings(std::string user,std::string mail, std::string number);
     void create_chatRoom(std::vector<std::string> infos);

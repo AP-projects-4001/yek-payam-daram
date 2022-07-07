@@ -26,6 +26,7 @@ public:
     virtual std::string getName(){};
     void setAdmin(std::string name);
     std::vector<std::string> getAdmin();
+    std::vector<std::string> getMembers() {return  this->members;}
     virtual std::string getName(std::string acc){};
     std::vector<Message> getChats(){return this->messages;};
     void remove_room() ;

@@ -235,6 +235,29 @@ int MyThread::find_room(std::string roomName)
     return -1;      //there is no Chat
 }
 
+void MyThread::profile(std::string name)
+{
+    int index = find_room(name);
+    if(chats[index]->getType() == "private"){
+        std::string res = "private";
+          res += ',';res += accounts[acc_index].get_user_name().toStdString();res+= ',';res += accounts[acc_index].get_email().toStdString();
+          res += ',';res+= accounts[acc_index].get_number().toStdString();
+          sendInfo(res);
+          return;
+    }
+    else{
+        std::string res = chats[index]->getType();
+        res += ',';
+        std::vector<std::string> members = chats[index]->getMembers();
+        for(unsigned long int i = 0; i < members.size(); i++){
+            res += members[i];
+            if(i < members.size() - 1)
+                res += ',';
+        }
+        sendInfo(res);
+    }
+}
+
 int MyThread::find_acc(std::string acc_name)
 {
     for(unsigned long int i = 0; i < chats.size(); i++){
