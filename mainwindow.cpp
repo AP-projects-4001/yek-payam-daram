@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    clientsocket->write("disconnected");
+    clientsocket->waitForBytesWritten(-1);
     delete ui;
 }
 
@@ -204,9 +206,15 @@ void MainWindow::createchat(QString order, QString type, QString name)
     clientsocket->waitForBytesWritten(-1);
 
     qDebug() << "wait for read";
-    //clientsocket->waitForBytesWritten(10000);
+    clientsocket->waitForBytesWritten(10000);
     clientsocket->flush();
     clientsocket->waitForBytesWritten(-1);
+
+    while(clientsocket->waitForReadyRead(-1)){
+        QByteArray data = clientsocket->readAll();
+        if(data.toStdString() == "done")
+            break;
+    }
 
     clientsocket->write("show chatrooms");
     clientsocket->waitForBytesWritten(-1);
