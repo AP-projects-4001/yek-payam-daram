@@ -1,4 +1,5 @@
 release/account.o
+release/channel.o
 release/groupchat.o
 release/main.o
 release/message.o

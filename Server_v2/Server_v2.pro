@@ -12,6 +12,7 @@ CONFIG += c++11
 
 SOURCES += \
     account.cpp \
+    channel.cpp \
     groupchat.cpp \
     main.cpp \
     message.cpp \
@@ -25,6 +26,7 @@ SOURCES += \
 
 HEADERS += \
     account.h \
+    channel.h \
     chatroom_abs.h \
     groupchat.h \
     message.h \

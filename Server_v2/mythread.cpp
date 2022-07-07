@@ -1,5 +1,7 @@
 #include "mythread.h"
 #include "myserver.h"
+#include "groupchat.h"
+#include "channel.h"
 #include <QFile>
 #include <fstream>
 #include <QTextStream>
@@ -8,7 +10,6 @@
 #include <QJsonArray>
 #include <string>
 #include <QDebug>
-#include "groupchat.h"
 
 MyThread::MyThread(qintptr ID , std::vector<Account>& accs, std::vector<ChatRoom_abs*>& chats ,QObject *parent ) :
     QThread(parent) ,accounts(accs),chats(chats)
@@ -171,7 +172,16 @@ void MyThread::myAccount()
         }
         else if (infos[0] == "send_massage"){
             int index = find_room(infos[2]);
-            chats[index]->sendMessage(infos[1],accounts[acc_index].get_user_name().toStdString());
+            if(chats[index]->getType() == "channel"){
+                std::vector<std::string> admins = chats[index]->getAdmin();
+                for(int i = 0;i < (int)admins.size(); i++){
+                    if(accounts[acc_index].get_user_name().toStdString() == admins[i]){
+                        chats[index]->sendMessage(infos[1],accounts[acc_index].get_user_name().toStdString());
+                    }
+                }
+            }
+
+            else{chats[index]->sendMessage(infos[1],accounts[acc_index].get_user_name().toStdString());}
         }
         else if(infos[0] == "show chatrooms"){
             show_chatRooms();
@@ -267,7 +277,15 @@ void MyThread::create_chatRoom(std::vector<std::string> infos)
         return;
     }
     else {
-
+        ChatRoom_abs* chat = new Channel;
+        for( unsigned long i = 2; i < infos.size() - 1; i++){
+            chat->setAccount(accounts[find_acc(infos[i])].get_user_name().toStdString());
+        }
+        chat->setAccount(accounts[acc_index].get_user_name().toStdString());
+        chat->setName(infos[infos.size()-1]);
+        chat->setAdmin(accounts[acc_index].get_user_name().toStdString());
+        chats.push_back(chat);
+        return;
     }
 }
 
