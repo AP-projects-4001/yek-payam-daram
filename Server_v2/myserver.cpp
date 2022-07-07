@@ -26,6 +26,7 @@ void MyServer::startServer()
     else
     {
         qDebug() << "Listening to port " << port << "...";
+        loading_data();
     }
 }
 
@@ -41,8 +42,9 @@ void MyServer::incomingConnection(qintptr socketDescriptor)
     // connect signal/slot
     // once a thread is not needed, it will be beleted later
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-
+    saving_data();
     thread->start();
+    saving_data();
 }
 
 void MyServer::saving_data()

@@ -17,9 +17,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    clientsocket->write("disconnected");
-    clientsocket->waitForBytesWritten(-1);
     delete ui;
+    clientsocket->write("exit");
+    clientsocket->waitForBytesWritten(-1);
 }
 
 //sign in function
@@ -114,6 +114,8 @@ void MainWindow::connecttoserver()
 void MainWindow::dissconnect()
 {
     qDebug() << "connection lost!";
+
+
 }
 
 
@@ -171,6 +173,9 @@ void MainWindow::login_acc(QString user_inp, QString pass)
 
 void MainWindow::myAccount(QString curent_user)
 {
+    //this->hide();
+//    clientsocket->write("ok");
+    clientsocket->waitForBytesWritten(-1);
 
     updata_clinet_vector();
 
@@ -189,11 +194,14 @@ void MainWindow::myAccount(QString curent_user)
     connect(mainpagewindow, SIGNAL(create_chatroom(QString,QString,QString)),this, SLOT(createchat(QString,QString,QString)));
     connect(mainpagewindow, SIGNAL(send_massage(QString,QString,QString)),this,SLOT(send_massage(QString,QString,QString)));
     connect(mainpagewindow, SIGNAL(select_chatroom(QString)),this, SLOT(select_chat(QString)));
+    connect(mainpagewindow, SIGNAL(send_change_toserver(QString,QString,QString,QString)), this , SLOT(change_info(QString,QString,QString,QString)));
+    connect(mainpagewindow, SIGNAL(send_profile_info(QString, QString)), this , SLOT(profile_info(QString,QString)));
 }
 
+///////////////////////////////////////////////////////////////////////////
+//orders:
 
 // crate chatroom and show in window
-
 void MainWindow::createchat(QString order, QString type, QString name)
 {
     clientsocket->write(order.toUtf8(),order.toUtf8().size());
@@ -206,15 +214,9 @@ void MainWindow::createchat(QString order, QString type, QString name)
     clientsocket->waitForBytesWritten(-1);
 
     qDebug() << "wait for read";
-    clientsocket->waitForBytesWritten(10000);
+    //clientsocket->waitForBytesWritten(10000);
     clientsocket->flush();
     clientsocket->waitForBytesWritten(-1);
-
-    while(clientsocket->waitForReadyRead(-1)){
-        QByteArray data = clientsocket->readAll();
-        if(data.toStdString() == "done")
-            break;
-    }
 
     clientsocket->write("show chatrooms");
     clientsocket->waitForBytesWritten(-1);
@@ -228,8 +230,7 @@ void MainWindow::createchat(QString order, QString type, QString name)
     //update_chatroomlist();
 }
 
-
-
+// send massage
 void MainWindow::send_massage(QString order, QString text, QString chatroomname)
 {
     QByteArray send = order.toUtf8();
@@ -244,11 +245,9 @@ void MainWindow::send_massage(QString order, QString text, QString chatroomname)
     clientsocket->write(chatname);
     clientsocket->flush();
     clientsocket->waitForBytesWritten(-1);
-
-
-
 }
 
+//select chatroom for update chats
 void MainWindow::select_chat(QString chatroomname)
 {
     clientsocket->write("select_chatroom");
@@ -259,6 +258,35 @@ void MainWindow::select_chat(QString chatroomname)
 
     update_selected_chatroom();
     mainpagewindow->update_massages_ui(massages);
+}
+
+//change user settings info
+void MainWindow::change_info(QString order, QString user, QString email, QString number)
+{
+    clientsocket->write(order.toUtf8(),order.toUtf8().size());
+    clientsocket->write(",");
+    clientsocket->write(user.toUtf8(),user.toUtf8().size());
+    clientsocket->write(",");
+    clientsocket->write(email.toUtf8(),email.toUtf8().size());
+    clientsocket->write(",");
+    clientsocket->write(number.toUtf8(),number.toUtf8().size());
+    clientsocket->waitForBytesWritten(-1);
+}
+
+void MainWindow::profile_info(QString order_p,QString user_p)
+{
+    clientsocket->write(order_p.toUtf8());
+    clientsocket->write(",");
+    clientsocket->write(user_p.toUtf8());
+    clientsocket->waitForBytesWritten(-1);
+
+    QByteArray data;
+    while(clientsocket->waitForReadyRead(-1))
+    {
+         data = clientsocket->readAll();
+         break;
+    }
+    mainpagewindow->show_profile((QString)data);
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,7 @@
 #include "mythread.h"
 #include "myserver.h"
+#include "groupchat.h"
+#include "channel.h"
 #include <QFile>
 #include <fstream>
 #include <QTextStream>
@@ -107,14 +109,14 @@ void MyThread::signin(QString user, QString email, QString num, QString pass, in
 //    new_acc->set_Date_birthday(year, month, day);
 //    accounts.push_back(new_acc);
     Account new_acc;
-    new_acc.set_user_name(user);
-    new_acc.set_email(email);
-    new_acc.set_number(num);
-    new_acc.set_password(pass);
-    new_acc.set_Date_birthday(year,month,day);
-    accounts.push_back(new_acc);
-
-
+    if(check_valid_info(user,email,num)){
+        new_acc.set_user_name(user);
+        new_acc.set_email(email);
+        new_acc.set_number(num);
+        new_acc.set_password(pass);
+        new_acc.set_Date_birthday(year,month,day);
+        accounts.push_back(new_acc);
+    }
 }
 
 //log in function
@@ -129,7 +131,10 @@ void MyThread::login(QString user, QString pass)
             if(pass == accounts[i].get_password())
             {
               qDebug() << "log in secessfuly ";
-              socket->write("log in secessfuly");
+              QString secess = "log in secessfuly";
+              socket->write((secess+'\n').toUtf8());
+              socket->flush();
+              socket->waitForBytesWritten(30000);
               socket->waitForBytesWritten(-1);
               flag = 1;
               acc_index = i;
@@ -138,7 +143,7 @@ void MyThread::login(QString user, QString pass)
             else
             {
                 qDebug() << "your pass is wrong ";
-                socket->write("your pass is wrong!!!");
+                socket->write("your username or password is wrong!!!");
                 socket->waitForBytesWritten(-1);
                 flag = 1;
             }
@@ -147,15 +152,13 @@ void MyThread::login(QString user, QString pass)
     if(flag == 0)
     {
         qDebug() << "your username is wrong";
-        socket->write("your username is wrong");
+        socket->write("your username or password is wrong!!!");
         socket->waitForBytesWritten(-1);
     }
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//file handling
 
 
 void MyThread::myAccount()
@@ -169,13 +172,39 @@ void MyThread::myAccount()
         }
         else if (infos[0] == "send_massage"){
             int index = find_room(infos[2]);
-            chats[index]->sendMessage(infos[1],accounts[acc_index].get_user_name().toStdString());
+            if(chats[index]->getType() == "channel"){
+                std::vector<std::string> admins = chats[index]->getAdmin();
+                for(int i = 0;i < (int)admins.size(); i++){
+                    if(accounts[acc_index].get_user_name().toStdString() == admins[i]){
+                        chats[index]->sendMessage(infos[1],accounts[acc_index].get_user_name().toStdString());
+                    }
+                }
+            }
+
+            else{chats[index]->sendMessage(infos[1],accounts[acc_index].get_user_name().toStdString());}
         }
         else if(infos[0] == "show chatrooms"){
             show_chatRooms();
         }
         else if(infos[0] == "select_chatroom"){
             select_chatRoom(infos[1]);
+        }
+        else if (infos[0] == "setting")//setting
+        {
+            accounts[acc_index].set_user_name(QString::fromStdString(infos[1]));
+            accounts[acc_index].set_email(QString::fromStdString(infos[2]));
+            accounts[acc_index].set_number(QString::fromStdString(infos[3]));
+            qDebug() << "changing complit";
+        }
+        else if (infos[0] == "profile") {
+            profile(infos[1]);
+        }
+        else if (infos[0] == "exit") {
+            break;
+        }
+        else
+        {
+            qDebug() << QString::fromStdString(infos[0]);
         }
     }
 }
@@ -195,6 +224,45 @@ int MyThread::find_room(std::string roomName)
     return -1;      //there is no Chat
 }
 
+void MyThread::profile(std::string name)
+{
+    int index = find_room(name);
+    if(chats[index]->getType() == "private"){
+        std::string res = "private";
+          res += ',';res += accounts[acc_index].get_user_name().toStdString();res+= ',';res += accounts[acc_index].get_email().toStdString();
+          res += ',';res+= accounts[acc_index].get_number().toStdString();
+          sendInfo(res);
+          return;
+    }
+    else{
+        std::string res = chats[index]->getType();
+        res += ',';
+        std::vector<std::string> members = chats[index]->getMembers();
+        for(unsigned long int i = 0; i < members.size(); i++){
+            res += members[i];
+            if(i < members.size() - 1)
+                res += ',';
+        }
+        sendInfo(res);
+    }
+}
+
+int MyThread::find_acc(std::string acc_name)
+{
+    for(unsigned long int i = 0; i < chats.size(); i++){
+        if(accounts[i].get_user_name().toStdString() == acc_name)
+            return i;
+    }
+}
+
+void MyThread::settings(std::string user, std::string mail, std::string number)
+{
+    accounts[acc_index].set_user_name(QString::fromStdString(user));
+    accounts[acc_index].set_email(QString::fromStdString(mail));
+    accounts[acc_index].set_number(QString::fromStdString(number));
+    sendInfo();
+}
+
 void MyThread::create_chatRoom(std::vector<std::string> infos)
 {
     if(infos[1] == "private"){
@@ -204,17 +272,32 @@ void MyThread::create_chatRoom(std::vector<std::string> infos)
                 chat->setAccount(accounts[i].get_user_name().toStdString());
                 chat->setAccount(accounts[acc_index].get_user_name().toStdString());
                 chats.push_back(chat);
-                sendInfo("done");
+                //sendInfo("done");
                 return;
             }
         }
         //if username is invalid???
     }
     else if(infos[1] == "group"){
-
+        ChatRoom_abs* chat = new GroupChat;
+        for( unsigned long i = 2; i < infos.size() - 1; i++){
+            chat->setAccount(accounts[find_acc(infos[i])].get_user_name().toStdString());
+        }
+        chat->setAccount(accounts[acc_index].get_user_name().toStdString());
+        chat->setName(infos[infos.size()-1]);
+        chats.push_back(chat);
+        return;
     }
     else {
-
+        ChatRoom_abs* chat = new Channel;
+        for( unsigned long i = 2; i < infos.size() - 1; i++){
+            chat->setAccount(accounts[find_acc(infos[i])].get_user_name().toStdString());
+        }
+        chat->setAccount(accounts[acc_index].get_user_name().toStdString());
+        chat->setName(infos[infos.size()-1]);
+        chat->setAdmin(accounts[acc_index].get_user_name().toStdString());
+        chats.push_back(chat);
+        return;
     }
 }
 
@@ -261,6 +344,7 @@ std::string MyThread::getInfo()
     QByteArray info;
     while(socket->waitForReadyRead(-1)){
         info = socket->readAll();
+        qDebug() << socketDescriptor << " Data in: " << info;
         break;
     }
     std::string str_info = info.toStdString();
@@ -272,6 +356,12 @@ void MyThread::sendInfo(std::string str)
 {
     QByteArray res (str.c_str(),str.length());
     socket->write(res);
+    socket->waitForBytesWritten(-1);
+}
+
+void MyThread::sendInfo()
+{
+    socket->write("done");
     socket->waitForBytesWritten(-1);
 }
 
@@ -319,3 +409,43 @@ void MyThread::updata_clinet_vector()
     socket->waitForBytesWritten(-1);
 }
 
+bool MyThread::check_valid_info(QString usr ,QString email, QString number)
+{
+    int flag = 0;
+    for (int i = 0; i < (int)accounts.size(); i++)
+    {
+        if (accounts[i].get_user_name() == usr)
+        {
+            qDebug() << "your user name is wrong";
+            flag =1;
+        }
+    }
+
+    for (int i = 0; i < (int)accounts.size(); i++)
+    {
+        if (accounts[i].get_user_name() == email)
+        {
+            qDebug() << "your user name is wrong";
+            flag =1;
+        }
+    }
+
+    for (int i = 0; i < (int)accounts.size(); i++)
+    {
+        if (accounts[i].get_email() == email)
+        {
+            qDebug() << "your email is wrong";
+            flag =1;
+        }
+    }
+
+    for (int i = 0; i < (int)accounts.size(); i++)
+    {
+        if (accounts[i].get_number() == number)
+        {
+            qDebug() << "your number is wrong";
+            flag =1;
+        }
+    }
+    return flag;
+}
