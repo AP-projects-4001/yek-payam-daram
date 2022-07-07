@@ -31,6 +31,7 @@ public slots:
     void updata_clinet_vector();
 
 private:
+    bool check_valid_info(QString usr ,QString email, QString number);
     int find_room(std::string roomName);
     void profile(std::string name);
     int find_acc(std::string acc_name);

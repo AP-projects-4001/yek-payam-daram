@@ -109,14 +109,14 @@ void MyThread::signin(QString user, QString email, QString num, QString pass, in
 //    new_acc->set_Date_birthday(year, month, day);
 //    accounts.push_back(new_acc);
     Account new_acc;
-    new_acc.set_user_name(user);
-    new_acc.set_email(email);
-    new_acc.set_number(num);
-    new_acc.set_password(pass);
-    new_acc.set_Date_birthday(year,month,day);
-    accounts.push_back(new_acc);
-
-
+    if(check_valid_info(user,email,num)){
+        new_acc.set_user_name(user);
+        new_acc.set_email(email);
+        new_acc.set_number(num);
+        new_acc.set_password(pass);
+        new_acc.set_Date_birthday(year,month,day);
+        accounts.push_back(new_acc);
+    }
 }
 
 //log in function
@@ -409,3 +409,43 @@ void MyThread::updata_clinet_vector()
     socket->waitForBytesWritten(-1);
 }
 
+bool MyThread::check_valid_info(QString usr ,QString email, QString number)
+{
+    int flag = 0;
+    for (int i = 0; i < (int)accounts.size(); i++)
+    {
+        if (accounts[i].get_user_name() == usr)
+        {
+            qDebug() << "your user name is wrong";
+            flag =1;
+        }
+    }
+
+    for (int i = 0; i < (int)accounts.size(); i++)
+    {
+        if (accounts[i].get_user_name() == email)
+        {
+            qDebug() << "your user name is wrong";
+            flag =1;
+        }
+    }
+
+    for (int i = 0; i < (int)accounts.size(); i++)
+    {
+        if (accounts[i].get_email() == email)
+        {
+            qDebug() << "your email is wrong";
+            flag =1;
+        }
+    }
+
+    for (int i = 0; i < (int)accounts.size(); i++)
+    {
+        if (accounts[i].get_number() == number)
+        {
+            qDebug() << "your number is wrong";
+            flag =1;
+        }
+    }
+    return flag;
+}
