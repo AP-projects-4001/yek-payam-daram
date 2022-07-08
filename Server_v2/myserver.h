@@ -20,6 +20,8 @@ public:
     void startServer();
     void saving_data();
     void loading_data();
+    void saving_chatrooms();
+    void loading_chatroom();
 signals:
 
 public slots:

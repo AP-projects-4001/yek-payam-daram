@@ -101,15 +101,8 @@ void MyThread::disconnected()
 
 void MyThread::signin(QString user, QString email, QString num, QString pass, int year, int month, int day)
 {
-//    new_acc = new Account;
-//    new_acc->set_user_name(user);
-//    new_acc->set_email(email);
-//    new_acc->set_number(num);
-//    new_acc->set_password(pass);
-//    new_acc->set_Date_birthday(year, month, day);
-//    accounts.push_back(new_acc);
     Account new_acc;
-    if(check_valid_info(user,email,num)){
+    if(check_valid_info(user,email,num) == 0){
         new_acc.set_user_name(user);
         new_acc.set_email(email);
         new_acc.set_number(num);
@@ -117,6 +110,7 @@ void MyThread::signin(QString user, QString email, QString num, QString pass, in
         new_acc.set_Date_birthday(year,month,day);
         accounts.push_back(new_acc);
     }
+
 }
 
 //log in function
@@ -134,7 +128,6 @@ void MyThread::login(QString user, QString pass)
               QString secess = "log in secessfuly";
               socket->write((secess+'\n').toUtf8());
               socket->flush();
-              socket->waitForBytesWritten(30000);
               socket->waitForBytesWritten(-1);
               flag = 1;
               acc_index = i;
@@ -163,7 +156,11 @@ void MyThread::login(QString user, QString pass)
 
 void MyThread::myAccount()
 {
+
+    getInfo();
+    //update vector accounts in client app
     updata_clinet_vector();
+
     while (true) {
         std::string info = getInfo();
         std::vector<std::string> infos = split(info,',');
@@ -236,6 +233,8 @@ void MyThread::profile(std::string name)
     }
     else{
         std::string res = chats[index]->getType();
+        res += ',';
+        res += chats[index]->getName();
         res += ',';
         std::vector<std::string> members = chats[index]->getMembers();
         for(unsigned long int i = 0; i < members.size(); i++){
@@ -382,7 +381,7 @@ void MyThread::updata_clinet_vector()
     QByteArray size_v = size.toUtf8();
     socket->write(size_v);
     socket->write(":");
-    socket->waitForBytesWritten(-1);
+
 
     for (int i = 0; i<(int)accounts.size() ;i++ )
     {
@@ -416,17 +415,9 @@ bool MyThread::check_valid_info(QString usr ,QString email, QString number)
     {
         if (accounts[i].get_user_name() == usr)
         {
-            qDebug() << "your user name is wrong";
+            qDebug() << "invalid username ";
             flag =1;
-        }
-    }
-
-    for (int i = 0; i < (int)accounts.size(); i++)
-    {
-        if (accounts[i].get_user_name() == email)
-        {
-            qDebug() << "your user name is wrong";
-            flag =1;
+            break;
         }
     }
 
@@ -434,8 +425,9 @@ bool MyThread::check_valid_info(QString usr ,QString email, QString number)
     {
         if (accounts[i].get_email() == email)
         {
-            qDebug() << "your email is wrong";
+            qDebug() << "invalid email";
             flag =1;
+            break;
         }
     }
 
@@ -443,8 +435,9 @@ bool MyThread::check_valid_info(QString usr ,QString email, QString number)
     {
         if (accounts[i].get_number() == number)
         {
-            qDebug() << "your number is wrong";
+            qDebug() << "invalid number ";
             flag =1;
+            break;
         }
     }
     return flag;

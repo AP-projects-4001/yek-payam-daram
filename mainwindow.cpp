@@ -36,7 +36,6 @@ void MainWindow::on_signin_openwindow_Button_clicked()
 
 void MainWindow::submit_acc(QString nameinp, QString emailinp, QString phonenuminp, QString passinp, int year, int month, int day)
 {
-    //clientsocket = new QTcpSocket(this);
     new_acc = new Account;
     new_acc->set_user_name(nameinp);
     new_acc->set_email(emailinp);
@@ -173,8 +172,9 @@ void MainWindow::login_acc(QString user_inp, QString pass)
 
 void MainWindow::myAccount(QString curent_user)
 {
-    //this->hide();
-//    clientsocket->write("ok");
+
+
+    clientsocket->write("ok");
     clientsocket->waitForBytesWritten(-1);
 
     updata_clinet_vector();
