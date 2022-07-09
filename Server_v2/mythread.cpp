@@ -101,15 +101,8 @@ void MyThread::disconnected()
 
 void MyThread::signin(QString user, QString email, QString num, QString pass, int year, int month, int day)
 {
-//    new_acc = new Account;
-//    new_acc->set_user_name(user);
-//    new_acc->set_email(email);
-//    new_acc->set_number(num);
-//    new_acc->set_password(pass);
-//    new_acc->set_Date_birthday(year, month, day);
-//    accounts.push_back(new_acc);
     Account new_acc;
-    if(check_valid_info(user,email,num)){
+    if(check_valid_info(user,email,num) == 0){
         new_acc.set_user_name(user);
         new_acc.set_email(email);
         new_acc.set_number(num);
@@ -117,6 +110,7 @@ void MyThread::signin(QString user, QString email, QString num, QString pass, in
         new_acc.set_Date_birthday(year,month,day);
         accounts.push_back(new_acc);
     }
+
 }
 
 //log in function
@@ -134,11 +128,11 @@ void MyThread::login(QString user, QString pass)
               QString secess = "log in secessfuly";
               socket->write((secess+'\n').toUtf8());
               socket->flush();
-              socket->waitForBytesWritten(30000);
               socket->waitForBytesWritten(-1);
               flag = 1;
               acc_index = i;
               myAccount();
+              break;
             }
             else
             {
@@ -163,7 +157,11 @@ void MyThread::login(QString user, QString pass)
 
 void MyThread::myAccount()
 {
+
+//    getInfo();
+    //update vector accounts in client app
     updata_clinet_vector();
+
     while (true) {
         std::string info = getInfo();
         std::vector<std::string> infos = split(info,',');
@@ -212,8 +210,8 @@ void MyThread::myAccount()
 int MyThread::find_room(std::string roomName)
 {
     for(unsigned long int i = 0; i < chats.size(); i++){
-        if(chats[i]->getType() == "Private"){
-           if(roomName ==  chats[i]->getName(accounts[acc_index].get_user_name().toStdString()))
+        if(chats[i]->getType() == "private"){
+           if(roomName ==  chats[i]->getName(accounts[acc_index].get_user_name().toStdString()) && (chats[i]->getMembers()[0] == accounts[acc_index].get_user_name().toStdString() || chats[i]->getMembers()[1] == accounts[acc_index].get_user_name().toStdString()) )
                return i;
         }
         else{
@@ -229,13 +227,16 @@ void MyThread::profile(std::string name)
     int index = find_room(name);
     if(chats[index]->getType() == "private"){
         std::string res = "private";
-          res += ',';res += accounts[acc_index].get_user_name().toStdString();res+= ',';res += accounts[acc_index].get_email().toStdString();
-          res += ',';res+= accounts[acc_index].get_number().toStdString();
+          int cur_acc = find_acc(name);
+          res += ',';res += accounts[cur_acc].get_user_name().toStdString();res+= ',';res += accounts[cur_acc].get_email().toStdString();
+          res += ',';res+= accounts[cur_acc].get_number().toStdString();
           sendInfo(res);
           return;
     }
     else{
         std::string res = chats[index]->getType();
+        res += ',';
+        res += chats[index]->getName();
         res += ',';
         std::vector<std::string> members = chats[index]->getMembers();
         for(unsigned long int i = 0; i < members.size(); i++){
@@ -249,7 +250,7 @@ void MyThread::profile(std::string name)
 
 int MyThread::find_acc(std::string acc_name)
 {
-    for(unsigned long int i = 0; i < chats.size(); i++){
+    for(unsigned long int i = 0; i < accounts.size(); i++){
         if(accounts[i].get_user_name().toStdString() == acc_name)
             return i;
     }
@@ -304,20 +305,26 @@ void MyThread::create_chatRoom(std::vector<std::string> infos)
 void MyThread::show_chatRooms()
 {
     std::string res;
-    if (chats.size() == 0){
-        res = "empty";
-    }
+
     for(unsigned long int i = 0; i < chats.size(); i++){
-        if(chats[i]->getType() == "Private"){
-            res += chats[i]->getName(accounts[acc_index].get_user_name().toStdString());
-            if(i < chats.size() - 1)
-                res += ',';
-        }
-        else{
-            res += chats[i]->getName();
-            if(i < chats.size() - 1)
-                res += ',';
-        }
+        std::vector<std::string> members = chats[i]->getMembers();
+        for(unsigned long int j = 0; j < members.size(); j++)
+            if (members[j] == accounts[acc_index].get_user_name().toStdString()){
+                if(chats[i]->getType() == "private"){
+                    res += chats[i]->getName(accounts[acc_index].get_user_name().toStdString());
+                    if(i < chats.size() - 1)
+                        res += ',';
+                }
+                else{
+                    res += chats[i]->getName();
+                    if(i < chats.size() - 1)
+                        res += ',';
+                }
+                break;
+            }
+    }
+    if (res == ""){
+        res = "empty";
     }
     sendInfo(res);
 }
@@ -382,7 +389,7 @@ void MyThread::updata_clinet_vector()
     QByteArray size_v = size.toUtf8();
     socket->write(size_v);
     socket->write(":");
-    socket->waitForBytesWritten(-1);
+
 
     for (int i = 0; i<(int)accounts.size() ;i++ )
     {
@@ -416,17 +423,9 @@ bool MyThread::check_valid_info(QString usr ,QString email, QString number)
     {
         if (accounts[i].get_user_name() == usr)
         {
-            qDebug() << "your user name is wrong";
+            qDebug() << "invalid username ";
             flag =1;
-        }
-    }
-
-    for (int i = 0; i < (int)accounts.size(); i++)
-    {
-        if (accounts[i].get_user_name() == email)
-        {
-            qDebug() << "your user name is wrong";
-            flag =1;
+            break;
         }
     }
 
@@ -434,8 +433,9 @@ bool MyThread::check_valid_info(QString usr ,QString email, QString number)
     {
         if (accounts[i].get_email() == email)
         {
-            qDebug() << "your email is wrong";
+            qDebug() << "invalid email";
             flag =1;
+            break;
         }
     }
 
@@ -443,8 +443,9 @@ bool MyThread::check_valid_info(QString usr ,QString email, QString number)
     {
         if (accounts[i].get_number() == number)
         {
-            qDebug() << "your number is wrong";
+            qDebug() << "invalid number ";
             flag =1;
+            break;
         }
     }
     return flag;

@@ -7,6 +7,8 @@
 #include "private_chat.h"
 #include <QFile>
 #include <vector>
+#include "groupchat.h"
+#include "channel.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MyServer; }
@@ -20,6 +22,8 @@ public:
     void startServer();
     void saving_data();
     void loading_data();
+    void saving_chatrooms();
+    void loading_chatroom();
 signals:
 
 public slots:

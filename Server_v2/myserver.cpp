@@ -9,6 +9,8 @@
 #include <QJsonArray>
 #include <string>
 #include <QDebug>
+#include <vector>
+#include "massage.h"
 
 MyServer::MyServer(QObject *parent) :
     QTcpServer(parent)
@@ -27,6 +29,9 @@ void MyServer::startServer()
     {
         qDebug() << "Listening to port " << port << "...";
         loading_data();
+        loading_chatroom();
+        saving_chatrooms();
+        saving_data();
     }
 }
 
@@ -38,19 +43,21 @@ void MyServer::incomingConnection(qintptr socketDescriptor)
 
     // Every new connection will be run in a newly created thread
     MyThread *thread = new MyThread(socketDescriptor, Accounts, ChatRooms, this);
-
+    saving_chatrooms();
+    saving_data();
     // connect signal/slot
     // once a thread is not needed, it will be beleted later
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-    saving_data();
+
     thread->start();
-    saving_data();
+
+
 }
 
 void MyServer::saving_data()
 {
     qDebug() << "saving data ... ";
-    QFile ofile{"database.json"};
+    QFile ofile{"C:/cpp files/project/database.json"};
     ofile.open(QIODevice::WriteOnly);
     QJsonObject j;
     QJsonArray b;
@@ -77,7 +84,7 @@ void MyServer::saving_data()
 
 void MyServer::loading_data()
 {
-    QFile ifile{"database.json"};
+    QFile ifile{"C:/cpp files/project/database.json"};
     ifile.open(QIODevice::ReadOnly);
     QByteArray b = ifile.readAll();
     QJsonDocument d = QJsonDocument::fromJson(b);
@@ -105,3 +112,147 @@ void MyServer::loading_data()
 
 }
 
+
+void MyServer::saving_chatrooms()
+{
+    qDebug() << "saving chatroom... ";
+    QFile ofile{"C:/cpp files/project/chatroom.json"};
+    ofile.open(QIODevice::WriteOnly);
+
+    QJsonArray chatrooms;
+    QJsonObject j;
+    for (int i = 0; i < (int)ChatRooms.size(); i++)
+    {
+        QJsonObject chatroom;
+        QString type = QString::fromStdString(ChatRooms[i]->getType());
+        chatroom["type"] = type;
+        QString name = QString::fromStdString(ChatRooms[i]->getName());
+        chatroom["name"] = name;
+
+        std::vector<std::string> members = ChatRooms[i]->getMembers();
+        QJsonArray chatroom_array;
+        for (int j = 0; j < (int)members.size(); j++)
+        {
+            QJsonObject member;
+            QString user= QString::fromStdString(members[j]);
+            member["user name"] = user;
+            chatroom_array.append(member);
+        }
+        chatroom["members"] = chatroom_array;
+
+
+        std::vector<Message> messages = ChatRooms[i]->getChats();
+        QJsonArray chats_array;
+        for (int j = 0; j < (int)messages.size() ; j++)
+        {
+            QJsonObject message;
+            QString msg = QString::fromStdString(messages[j].getMessage());
+            QStringList list_msg = msg.split(",");
+            message["sender"] = list_msg[0];
+            message["text"] = list_msg[1];
+            chats_array.append(message);
+        }
+        chatroom["messages"] = chats_array;
+
+        std::vector<std::string> admins = ChatRooms[i]->getAdmin();
+        QJsonArray admins_array;
+        for (int j = 0; j < (int)admins.size() ; j++)
+        {
+            QJsonObject admin;
+            QString adm = QString::fromStdString(admins[j]);
+            admin["admin"] = adm;
+        }
+        chatroom["admins"] = admins_array;
+        chatrooms.append(chatroom);
+    }
+    j["chatrooms"] = chatrooms;
+    QJsonDocument d(j);
+    ofile.write(d.toJson());
+    ofile.flush();
+    ofile.close();
+}
+
+void MyServer::loading_chatroom()
+{
+    QFile ifile{"C:/cpp files/project/chatroom.json"};
+    ifile.open(QIODevice::ReadOnly);
+    QByteArray b = ifile.readAll();
+    QJsonDocument d = QJsonDocument::fromJson(b);
+    QJsonObject s = d.object();
+
+    foreach(QJsonValue x, s["chatrooms"].toArray())
+    {
+        QJsonObject chatroom = x.toObject();
+        QString type = chatroom["type"].toString();
+        ChatRoom_abs* newchatroom ;
+        if (type == "private")
+        {
+            newchatroom= new Private_chat;
+
+            //name
+            newchatroom->setName(chatroom["name"].toString().toStdString());
+
+            //members
+            foreach(QJsonValue t, chatroom["members"].toArray())
+            {
+                QJsonObject member = t.toObject();
+                newchatroom->setAccount(member["user name"].toString().toStdString());
+            }
+
+            //message
+            foreach(QJsonValue t, chatroom["messages"].toArray())
+            {
+                QJsonObject msg = t.toObject();
+                newchatroom->sendMessage(msg["text"].toString().toStdString(),msg["sender"].toString().toStdString());
+            }
+
+        }
+
+        else if(type == "group")
+        {
+            newchatroom = new GroupChat;
+
+            //name
+            newchatroom->setName(chatroom["name"].toString().toStdString());
+
+            //members
+            foreach(QJsonValue t, chatroom["members"].toArray())
+            {
+                QJsonObject member = t.toObject();
+                newchatroom->setAccount(member["user name"].toString().toStdString());
+            }
+
+            //message
+            foreach(QJsonValue t, chatroom["messages"].toArray())
+            {
+                QJsonObject msg = t.toObject();
+                newchatroom->sendMessage(msg["text"].toString().toStdString(),msg["sender"].toString().toStdString());
+            }
+
+        }
+
+        else
+        {
+            newchatroom = new Channel;
+            //name
+            newchatroom->setName(chatroom["name"].toString().toStdString());
+
+            //members
+            foreach(QJsonValue t, chatroom["members"].toArray())
+            {
+                QJsonObject member = t.toObject();
+                newchatroom->setAccount(member["user name"].toString().toStdString());
+            }
+
+            //message
+            foreach(QJsonValue t, chatroom["messages"].toArray())
+            {
+                QJsonObject msg = t.toObject();
+                newchatroom->sendMessage(msg["text"].toString().toStdString(),msg["sender"].toString().toStdString());
+            }
+
+        }
+        ChatRooms.push_back(newchatroom);
+
+    }
+}
