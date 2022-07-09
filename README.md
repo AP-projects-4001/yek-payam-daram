@@ -25,8 +25,14 @@ After registration, log in and enter your user account.
 
 To create a chat room click on the bottom left button (create chatroom).  Select your chatroom type, then use the search line try to select the people you want to connect with them using username or phone number.
 
+![image](https://user-images.githubusercontent.com/99391294/178105327-6755637f-87f1-4466-862a-7c1df12085a2.png)
+
+
 To send a message, write your text on the bottom line of the chat, then press the send button.
 for update chatroom press the name in chatroom list in left.
+
+![image](https://user-images.githubusercontent.com/99391294/178105356-59aa5595-32b7-4e35-9b28-10cfdaa08442.png)
+
 
 you can change your information with setting window in Top left.
 
