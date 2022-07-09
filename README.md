@@ -18,6 +18,8 @@ Qt framework 5.12.12
 
 After running the app, register (try not to enter repetitious username, phone number and email!). 
 After registration, log in and enter your user account.
+
+
 ![image](https://user-images.githubusercontent.com/99391294/178105253-b9bb5798-7d61-47dc-a494-d6e437505875.png)
 ![image](https://user-images.githubusercontent.com/99391294/178105268-6114d9b0-8282-45c1-a539-a01fa76c5e47.png)
 
