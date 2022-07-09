@@ -158,7 +158,7 @@ void MyThread::login(QString user, QString pass)
 void MyThread::myAccount()
 {
 
-    getInfo();
+//    getInfo();
     //update vector accounts in client app
     updata_clinet_vector();
 
