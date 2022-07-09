@@ -209,7 +209,7 @@ void MyThread::myAccount()
 int MyThread::find_room(std::string roomName)
 {
     for(unsigned long int i = 0; i < chats.size(); i++){
-        if(chats[i]->getType() == "Private"){
+        if(chats[i]->getType() == "private"){
            if(roomName ==  chats[i]->getName(accounts[acc_index].get_user_name().toStdString()))
                return i;
         }
@@ -248,7 +248,7 @@ void MyThread::profile(std::string name)
 
 int MyThread::find_acc(std::string acc_name)
 {
-    for(unsigned long int i = 0; i < chats.size(); i++){
+    for(unsigned long int i = 0; i < accounts.size(); i++){
         if(accounts[i].get_user_name().toStdString() == acc_name)
             return i;
     }
@@ -303,20 +303,26 @@ void MyThread::create_chatRoom(std::vector<std::string> infos)
 void MyThread::show_chatRooms()
 {
     std::string res;
-    if (chats.size() == 0){
-        res = "empty";
-    }
+
     for(unsigned long int i = 0; i < chats.size(); i++){
-        if(chats[i]->getType() == "Private"){
-            res += chats[i]->getName(accounts[acc_index].get_user_name().toStdString());
-            if(i < chats.size() - 1)
-                res += ',';
-        }
-        else{
-            res += chats[i]->getName();
-            if(i < chats.size() - 1)
-                res += ',';
-        }
+        std::vector<std::string> members = chats[i]->getMembers();
+        for(unsigned long int j = 0; j < members.size(); j++)
+            if (members[j] == accounts[acc_index].get_user_name().toStdString()){
+                if(chats[i]->getType() == "private"){
+                    res += chats[i]->getName(accounts[acc_index].get_user_name().toStdString());
+                    if(i < chats.size() - 1)
+                        res += ',';
+                }
+                else{
+                    res += chats[i]->getName();
+                    if(i < chats.size() - 1)
+                        res += ',';
+                }
+                break;
+            }
+    }
+    if (res == ""){
+        res = "empty";
     }
     sendInfo(res);
 }
