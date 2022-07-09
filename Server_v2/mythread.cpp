@@ -157,7 +157,7 @@ void MyThread::login(QString user, QString pass)
 void MyThread::myAccount()
 {
 
-    getInfo();
+//    getInfo();
     //update vector accounts in client app
     updata_clinet_vector();
 
@@ -209,7 +209,7 @@ void MyThread::myAccount()
 int MyThread::find_room(std::string roomName)
 {
     for(unsigned long int i = 0; i < chats.size(); i++){
-        if(chats[i]->getType() == "Private"){
+        if(chats[i]->getType() == "private"){
            if(roomName ==  chats[i]->getName(accounts[acc_index].get_user_name().toStdString()))
                return i;
         }
@@ -248,7 +248,7 @@ void MyThread::profile(std::string name)
 
 int MyThread::find_acc(std::string acc_name)
 {
-    for(unsigned long int i = 0; i < chats.size(); i++){
+    for(unsigned long int i = 0; i < accounts.size(); i++){
         if(accounts[i].get_user_name().toStdString() == acc_name)
             return i;
     }
@@ -307,7 +307,7 @@ void MyThread::show_chatRooms()
         res = "empty";
     }
     for(unsigned long int i = 0; i < chats.size(); i++){
-        if(chats[i]->getType() == "Private"){
+        if(chats[i]->getType() == "private"){
             res += chats[i]->getName(accounts[acc_index].get_user_name().toStdString());
             if(i < chats.size() - 1)
                 res += ',';

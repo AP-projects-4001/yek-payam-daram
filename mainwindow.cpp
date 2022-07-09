@@ -174,8 +174,8 @@ void MainWindow::myAccount(QString curent_user)
 {
 
 
-    clientsocket->write("ok");
-    clientsocket->waitForBytesWritten(-1);
+//    clientsocket->write("ok");
+//    clientsocket->waitForBytesWritten(-1);
 
     updata_clinet_vector();
 

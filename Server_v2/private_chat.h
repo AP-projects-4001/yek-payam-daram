@@ -9,7 +9,7 @@ class Private_chat : public ChatRoom_abs
 public:
     Private_chat();
     std::vector<Account> getAccounts();
-    std::string getType() override {return "Private";};
+    std::string getType() override {return "private";};
     std::string getName(std::string name) override;
 };
 
