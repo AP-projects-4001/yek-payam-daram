@@ -132,6 +132,7 @@ void MyThread::login(QString user, QString pass)
               flag = 1;
               acc_index = i;
               myAccount();
+              break;
             }
             else
             {
@@ -210,7 +211,7 @@ int MyThread::find_room(std::string roomName)
 {
     for(unsigned long int i = 0; i < chats.size(); i++){
         if(chats[i]->getType() == "private"){
-           if(roomName ==  chats[i]->getName(accounts[acc_index].get_user_name().toStdString()))
+           if(roomName ==  chats[i]->getName(accounts[acc_index].get_user_name().toStdString()) && (chats[i]->getMembers()[0] == accounts[acc_index].get_user_name().toStdString() || chats[i]->getMembers()[1] == accounts[acc_index].get_user_name().toStdString()) )
                return i;
         }
         else{
@@ -226,8 +227,9 @@ void MyThread::profile(std::string name)
     int index = find_room(name);
     if(chats[index]->getType() == "private"){
         std::string res = "private";
-          res += ',';res += accounts[acc_index].get_user_name().toStdString();res+= ',';res += accounts[acc_index].get_email().toStdString();
-          res += ',';res+= accounts[acc_index].get_number().toStdString();
+          int cur_acc = find_acc(name);
+          res += ',';res += accounts[cur_acc].get_user_name().toStdString();res+= ',';res += accounts[cur_acc].get_email().toStdString();
+          res += ',';res+= accounts[cur_acc].get_number().toStdString();
           sendInfo(res);
           return;
     }

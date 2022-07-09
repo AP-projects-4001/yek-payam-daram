@@ -30,6 +30,8 @@ void MyServer::startServer()
         qDebug() << "Listening to port " << port << "...";
         loading_data();
         loading_chatroom();
+        saving_chatrooms();
+        saving_data();
     }
 }
 
@@ -41,14 +43,14 @@ void MyServer::incomingConnection(qintptr socketDescriptor)
 
     // Every new connection will be run in a newly created thread
     MyThread *thread = new MyThread(socketDescriptor, Accounts, ChatRooms, this);
-
+    saving_chatrooms();
+    saving_data();
     // connect signal/slot
     // once a thread is not needed, it will be beleted later
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
     thread->start();
-    saving_chatrooms();
-    saving_data();
+
 
 }
 
